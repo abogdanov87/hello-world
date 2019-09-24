@@ -2,7 +2,7 @@ from django.db import models
 import datetime
 
 
-class SubdivisionType(models.Model):
+class DepartmentType(models.Model):
     """
         Тип подразделения
     """
@@ -18,10 +18,10 @@ class SubdivisionType(models.Model):
     )
 
     class Meta:
-        db_table = 'subdivision_type'
+        db_table = 'department_type'
 
 
-class Subdivision(models.Model):
+class Department(models.Model):
     """
         Подразделение
     """
@@ -32,7 +32,7 @@ class Subdivision(models.Model):
     )
     type = models.ForeignKey(
         _('Тип подразделения'),
-        SubdivisionType,
+        DepartmentType,
         on_delete=models.CASCADE,
         blank=False, null=False,
     )
@@ -49,7 +49,7 @@ class Subdivision(models.Model):
     )
 
     class Meta:
-        db_table = 'subdivision'
+        db_table = 'department'
 
 
 class Position(models.Model):
@@ -71,7 +71,7 @@ class Position(models.Model):
         db_table = 'position'
 
 
-class Person(models.Model):
+class Employee(models.Model):
     """
         Сотрудник
     """
@@ -130,9 +130,9 @@ class Person(models.Model):
         max_length=255,
         blank=False, null=False,
     )
-    subdivision = models.ForeignKey(
+    department = models.ForeignKey(
         _('Подразделение'),
-        Subdivision,
+        Department,
         on_delete=models.CASCADE,
         blank=False, null=False,
     )
@@ -148,4 +148,130 @@ class Person(models.Model):
     )
 
     class Meta:
-        db_table = 'person'
+        db_table = 'employee'
+
+
+class EquipmentGroup(models.Model):
+    """
+        Группа инструмента
+    """
+    name = models.CharField(
+        _('Название'),
+        max_length=2000,
+        blank=False, null=False,
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'equipment_group'
+
+
+class Equipment(models.Model):
+    """
+        Инструмент
+    """
+    name = models.CharField(
+        _('Название'),
+        max_length=2000,
+        blank=False, null=False,
+    )
+    inventory_number = models.CharField(
+        _('Инвентарный номер'),
+        max_length=255,
+        blank=False, null=False,
+    )
+    equipment_group = models.ForeignKey(
+        _('Группа'),
+        EquipmentGroup,
+        on_delete=models.CASCADE,
+        blank=True, null=True,
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'equipment'
+
+
+class Workplace(models.Model):
+    """
+        Рабочее место
+    """
+    name = models.CharField(
+        _('Название'),
+        max_length=2000,
+        blank=False, null=False,
+    )
+    position = models.ForeignKey(
+        _('Должность'),
+        Position,
+        on_delete=models.CASCADE,
+        blank=False, null=False,
+    )
+    department = models.ForeignKey(
+        _('Подразделение'),
+        Department,
+        on_delete=models.CASCADE,
+        blank=False, null=False,
+    )
+    equipment = models.ManyToManyField(
+        _('Инструмент'),
+        Equipment,
+    )
+    instruction_required = models.BooleanField(
+        _('Необходимость проходить инструктаж по электробезопасности'),
+        blank=False, null=False,
+        default=False,
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'workplace'
+
+
+class WorkingConditionClass(models.Model):
+    """
+        Класс условий труда
+    """
+    name = models.CharField(
+        _('Класс'),
+        max_length=255,
+        blank=False, null=False,
+    )
+
+    class Meta:
+        db_table = 'working_condition_class'
+
+
+class Certificate(models.Model):
+    """
+        Сертификат
+    """
+    num = models.PositiveIntegerField(
+        _('Номер п.п'),
+        blank=False, null=False,
+    )
+    certificate_number = models.CharField(
+        _('Номер сертификата'),
+        max_length=255,
+        blank=False, null=False,
+    )
+    description = models.CharField(
+        _('Примечание'),
+        max_length=2000,
+        blank=True, null=True,
+    )
+
+    class Meta:
+        db_table = 'certificate'
