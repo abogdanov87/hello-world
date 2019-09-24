@@ -71,86 +71,6 @@ class Position(models.Model):
         db_table = 'position'
 
 
-class Employee(models.Model):
-    """
-        Сотрудник
-    """
-    SEX_CHOICES = (
-        ('m', 'мужчина'),
-        ('f', 'женщина'),
-    )
-
-    last_name = models.CharField(
-        _('Фамилия'),
-        max_length=255,
-        blank=False, null=False,
-    )
-    first_name = models.CharField(
-        _('Имя'),
-        max_length=255,
-        blank=False, null=False,
-    )
-    middle_name = models.CharField(
-        _('Отчество'),
-        max_length=255,
-        blank=False, null=False,
-    )
-    address = models.CharField(
-        _('Адрес проживания'),
-        max_length=2000,
-        blank=True, null=True,
-    )
-    birth_date = models.DateField(
-        _('Дата рождения'),
-        blank=False, null=False,
-        default=datetime.date.today,
-    )
-    sex = models.CharField(
-        _('Пол'),
-        max_length=1,
-        choices=SEX_CHOICES,
-        blank=True, null=True,
-    )
-    disability = models.BooleanField(
-        _('Инвалидность'),
-        blank=True, null=True,
-    )
-    employment_date = models.DateField(
-        _('Дата приема на работу'),
-        blank=False, null=False,
-        default=datetime.date.today,
-    )
-    pers_number = models.CharField(
-        _('Табельный номер'),
-        max_length=255,
-        blank=False, null=False,
-    )
-    insurance_number = models.CharField(
-        _('Страховой номер (СНИЛС)'),
-        max_length=255,
-        blank=False, null=False,
-    )
-    department = models.ForeignKey(
-        _('Подразделение'),
-        Department,
-        on_delete=models.CASCADE,
-        blank=False, null=False,
-    )
-    position = models.ForeignKey(
-        _('Должность'),
-        Position,
-        on_delete=models.CASCADE,
-        blank=False, null=False,
-    )
-    fire_date = models.DateField(
-        _('Дата увольнения'),
-        blank=True, null=True,
-    )
-
-    class Meta:
-        db_table = 'employee'
-
-
 class EquipmentGroup(models.Model):
     """
         Группа инструмента
@@ -228,7 +148,7 @@ class Workplace(models.Model):
     instruction_required = models.BooleanField(
         _('Необходимость проходить инструктаж по электробезопасности'),
         blank=False, null=False,
-        default=False,
+        default=True,
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -238,6 +158,78 @@ class Workplace(models.Model):
 
     class Meta:
         db_table = 'workplace'
+
+
+class Employee(models.Model):
+    """
+        Сотрудник
+    """
+    SEX_CHOICES = (
+        ('m', 'мужчина'),
+        ('f', 'женщина'),
+    )
+
+    last_name = models.CharField(
+        _('Фамилия'),
+        max_length=255,
+        blank=False, null=False,
+    )
+    first_name = models.CharField(
+        _('Имя'),
+        max_length=255,
+        blank=False, null=False,
+    )
+    middle_name = models.CharField(
+        _('Отчество'),
+        max_length=255,
+        blank=False, null=False,
+    )
+    address = models.CharField(
+        _('Адрес проживания'),
+        max_length=2000,
+        blank=True, null=True,
+    )
+    birth_date = models.DateField(
+        _('Дата рождения'),
+        blank=False, null=False,
+        default=datetime.date.today,
+    )
+    sex = models.CharField(
+        _('Пол'),
+        max_length=1,
+        choices=SEX_CHOICES,
+        blank=True, null=True,
+    )
+    disability = models.BooleanField(
+        _('Инвалидность'),
+        blank=True, null=True,
+    )
+    employment_date = models.DateField(
+        _('Дата приема на работу'),
+        blank=False, null=False,
+        default=datetime.date.today,
+    )
+    pers_number = models.CharField(
+        _('Табельный номер'),
+        max_length=255,
+        blank=False, null=False,
+    )
+    insurance_number = models.CharField(
+        _('Страховой номер (СНИЛС)'),
+        max_length=255,
+        blank=False, null=False,
+    )
+    workplace = models.ManyToManyField(
+        _('Рабочее место'),
+        Workplace,
+    )
+    fire_date = models.DateField(
+        _('Дата увольнения'),
+        blank=True, null=True,
+    )
+
+    class Meta:
+        db_table = 'employee'
 
 
 class WorkingConditionClass(models.Model):
@@ -261,6 +253,7 @@ class Certificate(models.Model):
     num = models.PositiveIntegerField(
         _('Номер п.п'),
         blank=False, null=False,
+        default=1,
     )
     certificate_number = models.CharField(
         _('Номер сертификата'),
