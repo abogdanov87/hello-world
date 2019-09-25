@@ -25,6 +25,11 @@ class Department(models.Model):
     """
         Подразделение
     """
+    code = models.CharField(
+        _('Код подразделения'),
+        max_length=30,
+        blank=False, null=False,
+    )
     name = models.CharField(
         _('Название'),
         max_length=2000,
@@ -33,13 +38,13 @@ class Department(models.Model):
     type = models.ForeignKey(
         _('Тип подразделения'),
         DepartmentType,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=False, null=False,
     )
     parent = models.ForeignKey(
         _('Вышестоящее подразделение'),
         'self',
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=True, null=True,
     )
     active = models.BooleanField(
@@ -56,6 +61,11 @@ class Position(models.Model):
     """
         Должность
     """
+    code = models.CharField(
+        _('Код должности'),
+        max_length=30,
+        blank=False, null=False,
+    )
     name = models.CharField(
         _('Название'),
         max_length=2000,
@@ -94,6 +104,11 @@ class Equipment(models.Model):
     """
         Инструмент
     """
+    code = models.CharField(
+        _('Код инструмента'),
+        max_length=30,
+        blank=False, null=False,
+    )
     name = models.CharField(
         _('Название'),
         max_length=2000,
@@ -107,7 +122,7 @@ class Equipment(models.Model):
     equipment_group = models.ForeignKey(
         _('Группа'),
         EquipmentGroup,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=True, null=True,
     )
     active = models.BooleanField(
@@ -124,6 +139,11 @@ class Workplace(models.Model):
     """
         Рабочее место
     """
+    code = models.CharField(
+        _('Код рабочего места'),
+        max_length=30,
+        blank=False, null=False,
+    )
     name = models.CharField(
         _('Название'),
         max_length=2000,
@@ -132,13 +152,13 @@ class Workplace(models.Model):
     position = models.ForeignKey(
         _('Должность'),
         Position,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=False, null=False,
     )
     department = models.ForeignKey(
         _('Подразделение'),
         Department,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         blank=False, null=False,
     )
     equipment = models.ManyToManyField(
@@ -268,3 +288,67 @@ class Certificate(models.Model):
 
     class Meta:
         db_table = 'certificate'
+
+
+class HarmfulFactor(models.Model):
+    """
+        Вредный фактор
+    """
+    code = models.CharField(
+        _('Номер'),
+        blank=False, null=False,
+    )
+    name = models.CharField(
+        _('Номер сертификата'),
+        max_length=2000,
+        blank=False, null=False,
+    )
+    inspection_frequency = models.CharField(
+        _('Периодичность осмотра'),
+        max_length=50,
+        blank=False, null=False,
+    )
+    inspection_frequency_i = models.PositiveIntegerField(
+        _('Периодичность осмотра'),
+        blank=False, null=False,
+    )
+
+    class Meta:
+        db_table = 'harmful_factor'
+
+
+class AssessmentCard(models.Model):
+    """
+        Карта СОУТ (Специальная оценка условий труда)
+    """
+    card_number = models.CharField(
+        _('Номер карты'),
+        blank=False, null=False,
+    )
+    workplace = models.ForeignKey(
+        _('Рабочее место'),
+        Workplace,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+    )
+    working_condition_class = models.ForeignKey(
+        _('Класс условий труда'),
+        WorkingConditionClass,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+    )
+    signing_date = models.DateField(
+        _('Дата подписания карты'),
+        blank=True, null=True,
+    )
+    next_assessment_date = models.DateField(
+        _('Дата следующей оценки'),
+        blank=True, null=True,
+    )
+    harmful_factor = models.ManyToManyField(
+        _('Вредный фактор'),
+        HarmfulFactor,
+    )
+
+    class Meta:
+        db_table = 'assessment_card'
