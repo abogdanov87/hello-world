@@ -10,6 +10,7 @@ class DepartmentType(models.Model):
         _('Название'),
         max_length=255,
         blank=False, null=False,
+        default='',
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -29,11 +30,13 @@ class Department(models.Model):
         _('Код подразделения'),
         max_length=30,
         blank=False, null=False,
+        default='',
     )
     name = models.CharField(
         _('Название'),
         max_length=2000,
         blank=False, null=False,
+        default='',
     )
     type = models.ForeignKey(
         _('Тип подразделения'),
@@ -65,11 +68,13 @@ class Position(models.Model):
         _('Код должности'),
         max_length=30,
         blank=False, null=False,
+        default='',
     )
     name = models.CharField(
         _('Название'),
         max_length=2000,
         blank=False, null=False,
+        default='',
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -89,6 +94,7 @@ class EquipmentGroup(models.Model):
         _('Название'),
         max_length=2000,
         blank=False, null=False,
+        default='',
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -108,16 +114,19 @@ class Equipment(models.Model):
         _('Код инструмента'),
         max_length=30,
         blank=False, null=False,
+        default='',
     )
     name = models.CharField(
         _('Название'),
         max_length=2000,
         blank=False, null=False,
+        default='',
     )
     inventory_number = models.CharField(
         _('Инвентарный номер'),
         max_length=255,
         blank=False, null=False,
+        default='',
     )
     equipment_group = models.ForeignKey(
         _('Группа'),
@@ -143,11 +152,13 @@ class Workplace(models.Model):
         _('Код рабочего места'),
         max_length=30,
         blank=False, null=False,
+        default='',
     )
     name = models.CharField(
         _('Название'),
         max_length=2000,
         blank=False, null=False,
+        default='',
     )
     position = models.ForeignKey(
         _('Должность'),
@@ -193,16 +204,19 @@ class Employee(models.Model):
         _('Фамилия'),
         max_length=255,
         blank=False, null=False,
+        default='',
     )
     first_name = models.CharField(
         _('Имя'),
         max_length=255,
         blank=False, null=False,
+        default='',
     )
     middle_name = models.CharField(
         _('Отчество'),
         max_length=255,
         blank=False, null=False,
+        default='',
     )
     address = models.CharField(
         _('Адрес проживания'),
@@ -233,11 +247,13 @@ class Employee(models.Model):
         _('Табельный номер'),
         max_length=255,
         blank=False, null=False,
+        default='',
     )
     insurance_number = models.CharField(
         _('Страховой номер (СНИЛС)'),
         max_length=255,
         blank=False, null=False,
+        default='',
     )
     workplace = models.ManyToManyField(
         _('Рабочее место'),
@@ -260,6 +276,7 @@ class WorkingConditionClass(models.Model):
         _('Класс'),
         max_length=255,
         blank=False, null=False,
+        default='',
     )
 
     class Meta:
@@ -279,6 +296,7 @@ class Certificate(models.Model):
         _('Номер сертификата'),
         max_length=255,
         blank=False, null=False,
+        default='',
     )
     description = models.CharField(
         _('Примечание'),
@@ -296,34 +314,98 @@ class HarmfulFactor(models.Model):
     """
     code = models.CharField(
         _('Номер'),
+        max_length=30,
         blank=False, null=False,
+        default='',
     )
     name = models.CharField(
-        _('Номер сертификата'),
+        _('Наименование'),
         max_length=2000,
         blank=False, null=False,
+        default='',
     )
     inspection_frequency = models.CharField(
         _('Периодичность осмотра'),
         max_length=50,
         blank=False, null=False,
-    )
-    inspection_frequency_i = models.PositiveIntegerField(
-        _('Периодичность осмотра'),
-        blank=False, null=False,
+        default='',
     )
 
     class Meta:
         db_table = 'harmful_factor'
 
 
+class WorkType(models.Model):
+    """
+        Вид работ и профессий
+    """
+    code = models.CharField(
+        _('Номер'),
+        max_length=30,
+        blank=False, null=False,
+        default='',
+    )
+    name = models.CharField(
+        _('Наименование'),
+        max_length=2000,
+        blank=False, null=False,
+        default='',
+    )
+    inspection_frequency = models.CharField(
+        _('Периодичность осмотра'),
+        max_length=50,
+        blank=False, null=False,
+        default='',
+    )
+
+    class Meta:
+        db_table = 'work_type'
+
+
+class MedicalType(models.Model):
+    """
+        Вид мед. осмотра
+    """
+    name = models.CharField(
+        _('Наименование'),
+        max_length=2000,
+        blank=False, null=False,
+        default='',
+    )
+
+    class Meta:
+        db_table = 'medical_type'
+
+
+class PsychiatricType(models.Model):
+    """
+        Вид психиатрического освидетельствования
+    """
+    name = models.CharField(
+        _('Наименование'),
+        max_length=2000,
+        blank=False, null=False,
+        default='',
+    )
+
+    class Meta:
+        db_table = 'psychiatric_type'
+
+
 class AssessmentCard(models.Model):
     """
         Карта СОУТ (Специальная оценка условий труда)
     """
+    ANSWERS = (
+        (0, 'Нет'),
+        (1, 'Да'),
+    )
+
     card_number = models.CharField(
         _('Номер карты'),
+        max_length=50,
         blank=False, null=False,
+        default='',
     )
     workplace = models.ForeignKey(
         _('Рабочее место'),
@@ -349,6 +431,166 @@ class AssessmentCard(models.Model):
         _('Вредный фактор'),
         HarmfulFactor,
     )
+    work_type = models.ManyToManyField(
+        _('Вид работ'),
+        WorkType,
+    )
+    medical_inspection = models.PositiveIntegerField(
+        _('Проведение медицинских осмотров'),
+        choices=ANSWERS,
+        blank=False, null=False,
+        default=1,
+    )
+    increased_pay = models.PositiveIntegerField(
+        _('Повышенная оплата труда'),
+        choices=ANSWERS,
+        blank=False, null=False,
+        default=0,
+    )
+    extra_vacation = models.PositiveIntegerField(
+        _('Дополнительный отпуск'),
+        choices=ANSWERS,
+        blank=False, null=False,
+        default=0,
+    )
+    reduced_working_hours = models.PositiveIntegerField(
+        _('Сокращенная продолжительность рабочего дня'),
+        choices=ANSWERS,
+        blank=False, null=False,
+        default=0,
+    )
+    milk = models.PositiveIntegerField(
+        _('Молоко'),
+        choices=ANSWERS,
+        blank=False, null=False,
+        default=0,
+    )
+    therapeutic_nutrition = models.PositiveIntegerField(
+        _('Лечебно-профилактическое питание'),
+        choices=ANSWERS,
+        blank=False, null=False,
+        default=0,
+    )
+    early_retirement = models.PositiveIntegerField(
+        _('Право на досрочное назначение страховой пенсии'),
+        choices=ANSWERS,
+        blank=False, null=False,
+        default=0,
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
 
     class Meta:
         db_table = 'assessment_card'
+
+
+class EducationType(models.Model):
+    """
+        Вид обучения (аттестации)
+    """
+    name = models.CharField(
+        _('Наименование'),
+        max_length=2000,
+        blank=False, null=False,
+        default='',
+    )
+    frequency = models.CharField(
+        _('Периодичность'),
+        max_length=50,
+        blank=False, null=False,
+        default='',
+    )
+
+    class Meta:
+        db_table = 'education_type'
+
+
+class CertificationType(models.Model):
+    """
+        Виды аттестаций
+    """
+    employee = models.ForeignKey(
+        _('Сотрудник'),
+        Employee,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+    )
+    education_date = models.DateField(
+        _('Дата обучения'),
+        blank=False, null=False,
+        default=datetime.date.today,
+    )
+    id_number = models.CharField(
+        _('Номер удостоверения'),
+        max_length=50,
+        blank=False, null=False,
+        default='',
+    )
+    education_type = models.ForeignKey(
+        _('Вид обучения'),
+        EducationType,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+    )
+    next_education_date = models.DateField(
+        _('Контрольная дата очередной аттестации'),
+        blank=False, null=False,
+        default=datetime.date.today,
+    )
+    days_to_education = models.PositiveIntegerField(
+        _('Дней до очередной аттестации'),
+        blank=True, null=True,
+    )
+
+    class Meta:
+        db_table = 'certification_type'
+
+
+class MemberStatus(models.Model):
+    """
+        Статус участника
+    """
+    name = models.CharField(
+        _('Наименование'),
+        max_length=2000,
+        blank=False, null=False,
+        default='',
+    )
+
+    class Meta:
+        db_table = 'member_status'
+
+
+class Commission(models.Model):
+    """
+        Комиссия
+    """
+    num = models.PositiveIntegerField(
+        _('№ п/п'),
+        blank=False, null=False,
+        default=1,
+    )
+    name = models.CharField(
+        _('Наименование'),
+        max_length=2000,
+        blank=False, null=False,
+        default='',
+    )
+    member_status = models.ForeignKey(
+        _('Статус участника'),
+        MemberStatus,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+    )
+    employee = models.ForeignKey(
+        _('Сотрудник'),
+        Employee,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+    )
+
+    class Meta:
+        db_table = 'commission'
