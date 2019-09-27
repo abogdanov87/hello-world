@@ -2,6 +2,38 @@ from django.db import models
 import datetime
 
 
+class Company(models.Model):
+    """
+        Компания
+    """
+    name = models.CharField(
+        _('Название'),
+        max_length=255,
+        blank=False, null=False,
+        default='',
+    )
+    short_name = models.CharField(
+        _('Краткое название'),
+        max_length=255,
+        blank=False, null=False,
+        default='',
+    )
+    inn = models.CharField(
+        _('ИНН'),
+        max_length=20,
+        blank=False, null=False,
+        default='',
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'company'
+
+
 class DepartmentType(models.Model):
     """
         Тип подразделения
@@ -49,6 +81,12 @@ class Department(models.Model):
         'self',
         on_delete=models.PROTECT,
         blank=True, null=True,
+    )
+    company = models.ForeignKey(
+        _('Компания'),
+        Company,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -562,6 +600,62 @@ class MemberStatus(models.Model):
 
     class Meta:
         db_table = 'member_status'
+
+
+class Ppe(models.Model):
+    """
+        СИЗ (Средство индивидуальной защиты)
+    """
+    name = models.CharField(
+        _('Наименование'),
+        max_length=255,
+        blank=False, null=False,
+        default='',
+    )
+    description = models.CharField(
+        _('Описание'),
+        max_length=2000,
+        blank=True, null=True,
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'ppe'
+
+
+class PpeStandard(models.Model):
+    """
+        Норма выдачи СИЗ
+    """
+    decree = models.CharField(
+        _('Основание'),
+        max_length=2000,
+        blank=False, null=False,
+        default='',
+    )
+    paragraph = models.CharField(
+        _('Номер пункта'),
+        max_length=30,
+        blank=True, null=True,
+    )
+    ppe = models.ForeignKey(
+        _('СИЗ'),
+        Ppe,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+    )
+    item_count = models.PositiveIntegerField(
+        _('Количество'),
+        blank=False, null=False,
+        default=0,
+    )
+
+    class Meta:
+        db_table = 'ppe_standard'
 
 
 class Commission(models.Model):
