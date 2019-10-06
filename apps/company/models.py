@@ -114,6 +114,12 @@ class Position(models.Model):
         blank=False, null=False,
         default='',
     )
+    company = models.ForeignKey(
+        _('Компания'),
+        Company,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+    )
     active = models.BooleanField(
         _('Статус активности'),
         blank=False, null=False,
@@ -171,6 +177,12 @@ class Equipment(models.Model):
         EquipmentGroup,
         on_delete=models.PROTECT,
         blank=True, null=True,
+    )
+    company = models.ForeignKey(
+        _('Компания'),
+        Company,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -301,6 +313,12 @@ class Employee(models.Model):
         _('Дата увольнения'),
         blank=True, null=True,
     )
+    company = models.ForeignKey(
+        _('Компания'),
+        Company,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+    )
 
     class Meta:
         db_table = 'employee'
@@ -340,6 +358,12 @@ class Certificate(models.Model):
         _('Примечание'),
         max_length=2000,
         blank=True, null=True,
+    )
+    company = models.ForeignKey(
+        _('Компания'),
+        Company,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
     )
 
     class Meta:
