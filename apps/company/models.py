@@ -1,6 +1,8 @@
 from django.db import models
 import datetime
 
+from django.utils.translation import gettext_lazy as _
+
 
 class Company(models.Model):
     """
@@ -32,6 +34,8 @@ class Company(models.Model):
 
     class Meta:
         db_table = 'company'
+        verbose_name = _('Компания')
+        verbose_name_plural = _('Компании')
 
 
 class DepartmentType(models.Model):
@@ -71,22 +75,22 @@ class Department(models.Model):
         default='',
     )
     type = models.ForeignKey(
-        _('Тип подразделения'),
         DepartmentType,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Тип подразделения'),
     )
     parent = models.ForeignKey(
-        _('Вышестоящее подразделение'),
         'self',
         on_delete=models.PROTECT,
         blank=True, null=True,
+        verbose_name=_('Вышестоящее подразделение'),
     )
     company = models.ForeignKey(
-        _('Компания'),
         Company,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Компания'),
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -115,10 +119,10 @@ class Position(models.Model):
         default='',
     )
     company = models.ForeignKey(
-        _('Компания'),
         Company,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Компания'),
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -173,16 +177,16 @@ class Equipment(models.Model):
         default='',
     )
     equipment_group = models.ForeignKey(
-        _('Группа'),
         EquipmentGroup,
         on_delete=models.PROTECT,
         blank=True, null=True,
+        verbose_name=_('Группа'),
     )
     company = models.ForeignKey(
-        _('Компания'),
         Company,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Компания'),
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -211,20 +215,20 @@ class Workplace(models.Model):
         default='',
     )
     position = models.ForeignKey(
-        _('Должность'),
         Position,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Должность'),
     )
     department = models.ForeignKey(
-        _('Подразделение'),
         Department,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Подразделение'),
     )
     equipment = models.ManyToManyField(
-        _('Инструмент'),
         Equipment,
+        verbose_name=_('Инструмент'),
     )
     instruction_required = models.BooleanField(
         _('Необходимость проходить инструктаж по электробезопасности'),
@@ -306,18 +310,18 @@ class Employee(models.Model):
         default='',
     )
     workplace = models.ManyToManyField(
-        _('Рабочее место'),
         Workplace,
+        verbose_name=_('Рабочее место'),
     )
     fire_date = models.DateField(
         _('Дата увольнения'),
         blank=True, null=True,
     )
     company = models.ForeignKey(
-        _('Компания'),
         Company,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Компания'),
     )
 
     class Meta:
@@ -360,10 +364,10 @@ class Certificate(models.Model):
         blank=True, null=True,
     )
     company = models.ForeignKey(
-        _('Компания'),
         Company,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Компания'),
     )
 
     class Meta:
@@ -470,16 +474,16 @@ class AssessmentCard(models.Model):
         default='',
     )
     workplace = models.ForeignKey(
-        _('Рабочее место'),
         Workplace,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Рабочее место'),
     )
     working_condition_class = models.ForeignKey(
-        _('Класс условий труда'),
         WorkingConditionClass,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Класс условий труда'),
     )
     signing_date = models.DateField(
         _('Дата подписания карты'),
@@ -490,12 +494,12 @@ class AssessmentCard(models.Model):
         blank=True, null=True,
     )
     harmful_factor = models.ManyToManyField(
-        _('Вредный фактор'),
         HarmfulFactor,
+        verbose_name=_('Вредный фактор'),
     )
     work_type = models.ManyToManyField(
-        _('Вид работ'),
         WorkType,
+        verbose_name=_('Вид работ'),
     )
     medical_inspection = models.PositiveIntegerField(
         _('Проведение медицинских осмотров'),
@@ -575,10 +579,10 @@ class CertificationType(models.Model):
         Виды аттестаций
     """
     employee = models.ForeignKey(
-        _('Сотрудник'),
         Employee,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Сотрудник'),
     )
     education_date = models.DateField(
         _('Дата обучения'),
@@ -592,10 +596,10 @@ class CertificationType(models.Model):
         default='',
     )
     education_type = models.ForeignKey(
-        _('Вид обучения'),
         EducationType,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Вид обучения'),
     )
     next_education_date = models.DateField(
         _('Контрольная дата очередной аттестации'),
@@ -667,10 +671,10 @@ class PpeStandard(models.Model):
         blank=True, null=True,
     )
     ppe = models.ForeignKey(
-        _('СИЗ'),
         Ppe,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('СИЗ'),
     )
     item_count = models.PositiveIntegerField(
         _('Количество'),
@@ -698,16 +702,16 @@ class Commission(models.Model):
         default='',
     )
     member_status = models.ForeignKey(
-        _('Статус участника'),
         MemberStatus,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Статус участника'),
     )
     employee = models.ForeignKey(
-        _('Сотрудник'),
         Employee,
         on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Сотрудник'),
     )
 
     class Meta:
