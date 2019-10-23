@@ -10,3 +10,8 @@ class CompanyListAPIView(generics.ListAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
     filterset_class = CompanyFilter
+
+
+class CompanyRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Company.objects.all()
+    serializer_class = CompanySerializer
