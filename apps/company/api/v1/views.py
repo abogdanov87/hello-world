@@ -1,5 +1,4 @@
 from rest_framework import generics
-from rest_framework_bulk import ListBulkCreateUpdateAPIView
 
 from company.models import Company
 from .serializers import CompanySerializer

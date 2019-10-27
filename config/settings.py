@@ -64,7 +64,7 @@ REST_FRAMEWORK = {
         # 'rest_framework.permissions.AllowAny',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
@@ -93,7 +93,7 @@ CORS_ORIGIN_REGEX_WHITELIST = (
     r'^(http?://(?:.+\.)?iskra\d\.ca\.sbrf\.ru(?::\d{1,5})?)$'
 )
 
-ROOT_URLCONF = 'safety_work.urls'
+ROOT_URLCONF = 'config.urls'
 
 TEMPLATES = [
     {
@@ -111,7 +111,7 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'safety_work.wsgi.application'
+WSGI_APPLICATION = 'config.wsgi.application'
 
 
 # Database
