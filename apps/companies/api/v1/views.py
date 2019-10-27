@@ -1,6 +1,6 @@
 from rest_framework import generics
 
-from company.models import Company
+from companies.models import Company
 from .serializers import CompanySerializer
 from .filters import CompanyFilter
 
