@@ -1,6 +1,6 @@
 from django_filters import rest_framework as filters
 
-from company.models import Company
+from companies.models import Company
 
 
 class CompanyFilter(filters.FilterSet):
