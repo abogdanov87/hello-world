@@ -13,5 +13,6 @@ class CompanyAdmin(admin.ModelAdmin):
         'name',
         'short_name',
         'inn',
+        'badge',
         'active',
     ]

@@ -26,6 +26,11 @@ class Company(models.Model):
         blank=False, null=False,
         default='',
     )
+    badge = models.CharField(
+        _('Логотип'),
+        max_length=255,
+        blank=True, null=True,
+    )
     active = models.BooleanField(
         _('Статус активности'),
         blank=False, null=False,
