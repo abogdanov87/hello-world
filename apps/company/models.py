@@ -79,7 +79,7 @@ class Department(models.Model):
         blank=False, null=False,
         default='',
     )
-    type = models.ForeignKey(
+    department_type = models.ForeignKey(
         DepartmentType,
         on_delete=models.PROTECT,
         blank=False, null=False,
