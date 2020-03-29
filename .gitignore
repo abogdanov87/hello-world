@@ -108,3 +108,8 @@ venv.bak/
 
 # PyCharm
 .idea
+
+# other
+_windows
+.DS_Store
+config.yml
