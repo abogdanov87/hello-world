@@ -16,3 +16,5 @@ class CompanyAdmin(admin.ModelAdmin):
         'badge',
         'active',
     ]
+    list_display = ('name', 'inn',)
+    list_display_links = ('name',)
