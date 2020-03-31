@@ -15,7 +15,36 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls import url
 from django.conf.urls import include
+from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
+from companies import token
+from django.contrib.auth import views as auth_views
+
+auth_token_urls = [
+    url(
+        r'^api/token/$',
+        token.UserTokenObtainPairView.as_view(),
+        name='token_obtain_pair',
+    ),
+    url(r'^api/token/refresh/$', TokenRefreshView.as_view(),
+        name='token_refresh'),
+    url(r'^api/token/verify/$', TokenVerifyView.as_view(),
+        name='token_verify'),
+]
+
+auth_urls = [
+    url(
+        r'^admin/json/api-auth/login/$',
+        auth_views.LoginView.as_view(template_name='admin/login.html'),
+        name='login',
+    ),
+    url(
+        r'^admin/json/api-auth/logout/$',
+        auth_views.LogoutView.as_view(),
+        name='logout',
+    ),
+]
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,3 +52,6 @@ urlpatterns = [
     path('auth/', include('djoser.urls.authtoken')),
     path('', include('companies.urls', namespace='companies')),
 ]
+
+urlpatterns += auth_token_urls
+urlpatterns += auth_urls

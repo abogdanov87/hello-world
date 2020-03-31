@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import sys
 
+AUTH_USER_MODEL = 'companies.User'
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
@@ -148,8 +150,16 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
+
+BASE_URL = 'http://localhost:8000'
+LOGIN_FORM_URL = BASE_URL + '/admin/json/api-auth/login/'
+HOME_FORM_URL = BASE_URL + '/#/companies/'
+
+LOGOUT_REDIRECT_URL = LOGIN_FORM_URL
+LOGIN_REDIRECT_URL = LOGIN_FORM_URL
+LOGIN_URL = LOGIN_FORM_URL

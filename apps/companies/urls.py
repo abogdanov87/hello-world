@@ -15,4 +15,9 @@ urlpatterns = [
         api_v1_views.CompanyRetrieveUpdateAPIView.as_view(),
         name='detail',
     ),
+    url(
+        r'^api/v1/users/(?P<pk>\d+)/$',
+        api_v1_views.UserRetrieveUpdateAPIView.as_view(),
+        name='detail',
+    ),
 ]
