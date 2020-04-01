@@ -36,6 +36,7 @@ class UserAdmin(admin.ModelAdmin):
         'last_name',
         'middle_name',
         'email',
+        'avatar',
         'password_change_date',
         'groups',
         'user_permissions',

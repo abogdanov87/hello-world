@@ -16,6 +16,11 @@ urlpatterns = [
         name='detail',
     ),
     url(
+        r'^api/v1/current-user/$',
+        api_v1_views.CurrentUserListAPIView.as_view(),
+        name='list',
+    ),
+    url(
         r'^api/v1/users/(?P<pk>\d+)/$',
         api_v1_views.UserRetrieveUpdateAPIView.as_view(),
         name='detail',

@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, permissions
 
 from companies.models import Company, User
 from .serializers import CompanySerializer, UserSerializer
@@ -16,13 +16,14 @@ class CompanyRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = CompanySerializer
 
 
-class UserRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+class CurrentUserListAPIView(generics.ListAPIView):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
     def get_queryset(self):
-        queryset = User.objects.all()
-        if self.request.user.is_authenticated:
-            return queryset.filter(pk=self.request.user.id)
-        else:
-            return queryset.filter(pk=-1)
+        return User.objects.filter(id=self.request.user.id)
+
+
+class UserRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
