@@ -5,10 +5,13 @@ from .serializers import CompanySerializer, UserSerializer
 from .filters import CompanyFilter
 
 
-class CompanyListAPIView(generics.ListAPIView):
+class CompanyListCreateAPIView(generics.ListCreateAPIView):
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
     filterset_class = CompanyFilter
+
+    def get_queryset(self):
+        return Company.objects.filter(user=self.request.user.id)
 
 
 class CompanyRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):

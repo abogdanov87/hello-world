@@ -7,7 +7,7 @@ app_name = 'companies'
 urlpatterns = [
     url(
         r'^api/v1/companies/$',
-        api_v1_views.CompanyListAPIView.as_view(),
+        api_v1_views.CompanyListCreateAPIView.as_view(),
         name='list',
     ),
     url(

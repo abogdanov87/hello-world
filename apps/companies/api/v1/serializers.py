@@ -12,6 +12,7 @@ class CompanySerializer(serializers.ModelSerializer):
             'short_name',
             'inn',
             'badge',
+            'user',
             'active',
         )
 
