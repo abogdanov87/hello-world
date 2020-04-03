@@ -109,6 +109,8 @@ class DepartmentType(models.Model):
 
     class Meta:
         db_table = 'department_type'
+        verbose_name = _('Тип подразделения')
+        verbose_name_plural = _('Типы подразделений')
 
 
 class Department(models.Model):
@@ -130,7 +132,7 @@ class Department(models.Model):
     department_type = models.ForeignKey(
         DepartmentType,
         on_delete=models.PROTECT,
-        blank=False, null=False,
+        blank=True, null=True,
         verbose_name=_('Тип подразделения'),
     )
     parent = models.ForeignKey(
@@ -153,6 +155,8 @@ class Department(models.Model):
 
     class Meta:
         db_table = 'department'
+        verbose_name = 'Подразделение'
+        verbose_name_plural = 'Подразделения'
 
 
 class Position(models.Model):

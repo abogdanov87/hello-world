@@ -4,6 +4,9 @@ from django.contrib import admin
 from .models import (
     Company,
     User,
+    Department,
+    Workplace,
+    DepartmentType,
 )
 
 
@@ -43,3 +46,29 @@ class UserAdmin(admin.ModelAdmin):
     ]
     list_display = ('id', 'username', 'last_name', 'first_name')
     list_display_links = ('username',)
+
+
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    model = Department
+    fields = [
+        'code',
+        'name',
+        'department_type',
+        'parent',
+        'company',
+        'active',
+    ]
+    list_display = ('code', 'name', 'company')
+    list_display_links = ('code', 'name')
+
+
+@admin.register(DepartmentType)
+class DepartmentTypeAdmin(admin.ModelAdmin):
+    model = DepartmentType
+    fields = [
+        'name',
+        'active',
+    ]
+    list_display = ('name',)
+    list_display_links = ('name',)
