@@ -7,6 +7,10 @@ from .models import (
     Department,
     Workplace,
     DepartmentType,
+    EquipmentGroup,
+    Equipment,
+    Position,
+    Employee,
 )
 
 
@@ -72,3 +76,81 @@ class DepartmentTypeAdmin(admin.ModelAdmin):
     ]
     list_display = ('name',)
     list_display_links = ('name',)
+
+
+@admin.register(EquipmentGroup)
+class EquipmentGroupAdmin(admin.ModelAdmin):
+    model = EquipmentGroup
+    fields = [
+        'name',
+        'active',
+    ]
+    list_display = ('name',)
+    list_display_links = ('name',)
+
+
+@admin.register(Equipment)
+class EquipmentAdmin(admin.ModelAdmin):
+    model = Equipment
+    fields = [
+        'code',
+        'name',
+        'inventory_number',
+        'equipment_group',
+        'company',
+        'active',
+    ]
+    list_display = ('code', 'name', 'company')
+    list_display_links = ('code', 'name')
+
+
+@admin.register(Position)
+class PositionAdmin(admin.ModelAdmin):
+    model = Equipment
+    fields = [
+        'code',
+        'name',
+        'company',
+        'boss',
+        'active',
+    ]
+    list_display = ('code', 'name', 'company')
+    list_display_links = ('code',)
+
+
+@admin.register(Workplace)
+class WorkplaceAdmin(admin.ModelAdmin):
+    model = Workplace
+    fields = [
+        'code',
+        'position',
+        'department',
+        'equipment',
+        'instruction_required',
+        'active',
+    ]
+    list_display = ('code', 'position_name', 'department_name', 'company_name')
+    list_display_links = ('code', 'position_name', 'department_name', 'company_name')
+
+
+@admin.register(Employee)
+class EmployeeAdmin(admin.ModelAdmin):
+    model = Employee
+    fields = [
+        'last_name',
+        'first_name',
+        'middle_name',
+        'address',
+        'birth_date',
+        'gender',
+        'disability',
+        'employment_date',
+        'pers_number',
+        'avatar',
+        'insurance_number',
+        'workplace',
+        'fire_date',
+        'company',
+    ]
+    list_display = ('pers_number', '__str__', 'company_name')
+    list_display_links = ('pers_number', '__str__',)

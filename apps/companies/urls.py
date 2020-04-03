@@ -1,8 +1,9 @@
 from django.conf.urls import url
 
 from .api.v1 import views as api_v1_views
+from . import apps
 
-app_name = 'companies'
+app_name = apps.CompanyConfig.name
 
 urlpatterns = [
     url(
@@ -33,6 +34,21 @@ urlpatterns = [
     url(
         r'^api/v1/departments/$',
         api_v1_views.DepartmentListCreateAPIView.as_view(),
+        name='list',
+    ),
+    url(
+        r'^api/v1/positions/$',
+        api_v1_views.PositionListCreateAPIView.as_view(),
+        name='list',
+    ),
+    url(
+        r'^api/v1/equipments/$',
+        api_v1_views.EquipmentListCreateAPIView.as_view(),
+        name='list',
+    ),
+    url(
+        r'^api/v1/employee/$',
+        api_v1_views.EmployeeListCreateAPIView.as_view(),
         name='list',
     ),
 ]

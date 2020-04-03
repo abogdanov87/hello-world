@@ -4,7 +4,11 @@ from companies.models import (
     User, 
     Workplace, 
     Department,
-    DepartmentType
+    DepartmentType,
+    EquipmentGroup,
+    Equipment,
+    Position,
+    Employee
 )
 
 
@@ -47,7 +51,6 @@ class WorkplaceSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'code',
-            'name',
             'position',
             'department',
             'equipment',
@@ -85,6 +88,77 @@ class DepartmentSerializer(serializers.ModelSerializer):
             'parent',
             'company',
             'active',
+        )
+
+    def validate(self, data):
+        return data
+
+
+class PositionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Position
+        fields = (
+            'id',
+            'code',
+            'name',
+            'company',
+            'boss',
+            'active',
+        )
+
+    def validate(self, data):
+        return data
+
+
+class EquipmentGroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EquipmentGroup
+        fields = (
+            'id',
+            'name',
+            'active',
+        )
+
+    def validate(self, data):
+        return data
+
+
+class EquipmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Equipment
+        fields = (
+            'id',
+            'code',
+            'name',
+            'inventory_number',
+            'equipment_group',
+            'company',
+            'active',
+        )
+
+    def validate(self, data):
+        return data
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Employee
+        fields = (
+            'id',
+            'last_name',
+            'first_name',
+            'middle_name',
+            'address',
+            'birth_date',
+            'gender',
+            'disability',
+            'employment_date',
+            'pers_number',
+            'avatar',
+            'insurance_number',
+            'workplace',
+            'fire_date',
+            'company',
         )
 
     def validate(self, data):

@@ -90,6 +90,9 @@ class Company(models.Model):
         verbose_name = _('Компания')
         verbose_name_plural = _('Компании')
 
+    def __str__(self):
+        return self.name
+
 
 class DepartmentType(models.Model):
     """
@@ -111,6 +114,9 @@ class DepartmentType(models.Model):
         db_table = 'department_type'
         verbose_name = _('Тип подразделения')
         verbose_name_plural = _('Типы подразделений')
+
+    def __str__(self):
+        return self.name
 
 
 class Department(models.Model):
@@ -158,6 +164,9 @@ class Department(models.Model):
         verbose_name = 'Подразделение'
         verbose_name_plural = 'Подразделения'
 
+    def __str__(self):
+        return self.name
+
 
 class Position(models.Model):
     """
@@ -181,6 +190,11 @@ class Position(models.Model):
         blank=False, null=False,
         verbose_name=_('Компания'),
     )
+    boss = models.BooleanField(
+        _('Руководящая позиция'),
+        blank=False, null=False,
+        default=False,
+    )
     active = models.BooleanField(
         _('Статус активности'),
         blank=False, null=False,
@@ -189,6 +203,11 @@ class Position(models.Model):
 
     class Meta:
         db_table = 'position'
+        verbose_name = 'Должность'
+        verbose_name_plural = 'Должности'
+
+    def __str__(self):
+        return self.name
 
 
 class EquipmentGroup(models.Model):
@@ -209,6 +228,8 @@ class EquipmentGroup(models.Model):
 
     class Meta:
         db_table = 'equipment_group'
+        verbose_name = 'Группа инструментов'
+        verbose_name_plural = 'Группы инструментов'
 
 
 class Equipment(models.Model):
@@ -253,6 +274,11 @@ class Equipment(models.Model):
 
     class Meta:
         db_table = 'equipment'
+        verbose_name = 'Инструмент'
+        verbose_name_plural = 'Инструменты'
+
+    def __str__(self):
+        return self.name
 
 
 class Workplace(models.Model):
@@ -262,12 +288,6 @@ class Workplace(models.Model):
     code = models.CharField(
         _('Код рабочего места'),
         max_length=30,
-        blank=False, null=False,
-        default='',
-    )
-    name = models.CharField(
-        _('Название'),
-        max_length=2000,
         blank=False, null=False,
         default='',
     )
@@ -300,13 +320,27 @@ class Workplace(models.Model):
 
     class Meta:
         db_table = 'workplace'
+        verbose_name = 'Рабочее место'
+        verbose_name_plural = 'Рабочие места'
+
+    def __str__(self):
+        return '{} in {} ({})'.format(self.position.name, self.department.name, self.department.company.name)
+
+    def position_name(self):
+        return self.position.name
+
+    def department_name(self):
+        return self.department.name
+
+    def company_name(self):
+        return self.department.company.name
 
 
 class Employee(models.Model):
     """
         Сотрудник
     """
-    SEX_CHOICES = (
+    GENDER_CHOICES = (
         ('m', 'мужчина'),
         ('f', 'женщина'),
     )
@@ -326,8 +360,7 @@ class Employee(models.Model):
     middle_name = models.CharField(
         _('Отчество'),
         max_length=255,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     address = models.CharField(
         _('Адрес проживания'),
@@ -339,10 +372,10 @@ class Employee(models.Model):
         blank=False, null=False,
         default=datetime.date.today,
     )
-    sex = models.CharField(
+    gender = models.CharField(
         _('Пол'),
         max_length=1,
-        choices=SEX_CHOICES,
+        choices=GENDER_CHOICES,
         blank=True, null=True,
     )
     disability = models.BooleanField(
@@ -359,6 +392,11 @@ class Employee(models.Model):
         max_length=255,
         blank=False, null=False,
         default='',
+    )
+    avatar = models.CharField(
+        _('Аватарка'),
+        max_length=255,
+        blank=True, null=True,
     )
     insurance_number = models.CharField(
         _('Страховой номер (СНИЛС)'),
@@ -383,6 +421,14 @@ class Employee(models.Model):
 
     class Meta:
         db_table = 'employee'
+        verbose_name = 'Сотрудник'
+        verbose_name_plural = 'Сотрудники'
+
+    def __str__(self):
+        return '{} {} {}'.format(self.last_name, self.first_name, self.middle_name if self.middle_name else '')
+
+    def company_name(self):
+        return self.company.name
 
 
 class WorkingConditionClass(models.Model):

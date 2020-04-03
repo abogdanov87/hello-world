@@ -2,9 +2,32 @@ from rest_framework import generics, permissions
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from companies.models import Company, User, Workplace, Department
-from .serializers import CompanySerializer, UserSerializer, WorkplaceSerializer, DepartmentSerializer
-from .filters import CompanyFilter, DepartmentFilter, WorkplaceFilter
+from companies.models import (
+    Company, 
+    User, 
+    Workplace, 
+    Department,
+    Position,
+    Equipment,
+    Employee,
+)
+from .serializers import (
+    CompanySerializer, 
+    UserSerializer, 
+    WorkplaceSerializer, 
+    DepartmentSerializer,
+    PositionSerializer,
+    EquipmentSerializer,
+    EmployeeSerializer,
+)
+from .filters import (
+    CompanyFilter, 
+    DepartmentFilter, 
+    WorkplaceFilter,
+    PositionFilter,
+    EquipmentFilter,
+    EmployeeFilter,
+)
 
 
 class CompanyListCreateAPIView(generics.ListCreateAPIView):
@@ -41,10 +64,32 @@ class WorkplaceListCreateAPIView(generics.ListCreateAPIView):
     filterset_class = WorkplaceFilter
 
     def get_queryset(self):
-        return Workplace.objects.all()
+        queryset = Workplace.objects.all()
+        company = self.request.query_params.get('company', None)
+        if company is not None:
+            queryset = queryset.filter(department__company=company)
+        return queryset
 
 
 class DepartmentListCreateAPIView(generics.ListCreateAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     filterset_class = DepartmentFilter
+
+
+class PositionListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+    filterset_class = PositionFilter
+
+
+class EquipmentListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Equipment.objects.all()
+    serializer_class = EquipmentSerializer
+    filterset_class = EquipmentFilter
+
+
+class EmployeeListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer
+    filterset_class = EmployeeFilter
