@@ -45,23 +45,6 @@ class UserSerializer(serializers.ModelSerializer):
         return data
 
 
-class WorkplaceSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Workplace
-        fields = (
-            'id',
-            'code',
-            'position',
-            'department',
-            'equipment',
-            'instruction_required',
-            'active',
-        )
-
-    def validate(self, data):
-        return data
-
-
 class DepartmentTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = DepartmentType
@@ -133,6 +116,27 @@ class EquipmentSerializer(serializers.ModelSerializer):
             'inventory_number',
             'equipment_group',
             'company',
+            'active',
+        )
+
+    def validate(self, data):
+        return data
+
+
+class WorkplaceSerializer(serializers.ModelSerializer):
+    department = DepartmentSerializer()
+    position = PositionSerializer()
+    equipment = EquipmentSerializer(many = True)
+
+    class Meta:
+        model = Workplace
+        fields = (
+            'id',
+            'code',
+            'position',
+            'department',
+            'equipment',
+            'instruction_required',
             'active',
         )
 
