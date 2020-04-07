@@ -59,8 +59,6 @@ class DepartmentTypeSerializer(serializers.ModelSerializer):
 
 
 class DepartmentSerializer(serializers.ModelSerializer):
-    department_type = DepartmentTypeSerializer()
-
     class Meta:
         model = Department
         fields = (
@@ -72,6 +70,13 @@ class DepartmentSerializer(serializers.ModelSerializer):
             'company',
             'active',
         )
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['department_type'] = DepartmentTypeSerializer(
+            instance.department_type,
+        ).data
+        return response
 
     def validate(self, data):
         return data

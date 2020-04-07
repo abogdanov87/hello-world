@@ -10,6 +10,7 @@ from companies.models import (
     Position,
     Equipment,
     Employee,
+    DepartmentType,
 )
 from .serializers import (
     CompanySerializer, 
@@ -19,6 +20,7 @@ from .serializers import (
     PositionSerializer,
     EquipmentSerializer,
     EmployeeSerializer,
+    DepartmentTypeSerializer,
 )
 from .filters import (
     CompanyFilter, 
@@ -90,6 +92,16 @@ class DepartmentListCreateAPIView(generics.ListCreateAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     filterset_class = DepartmentFilter
+
+
+class DepartmentRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Department.objects.all()
+    serializer_class = DepartmentSerializer
+
+
+class DepartmentTypeListAPIView(generics.ListAPIView):
+    queryset = DepartmentType.objects.all()
+    serializer_class = DepartmentTypeSerializer
 
 
 class PositionListCreateAPIView(generics.ListCreateAPIView):
