@@ -88,6 +88,11 @@ class WorkplaceListCreateAPIView(generics.ListCreateAPIView):
         return queryset
 
 
+class WorkplaceRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Workplace.objects.all()
+    serializer_class = WorkplaceSerializer
+
+
 class DepartmentListCreateAPIView(generics.ListCreateAPIView):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer

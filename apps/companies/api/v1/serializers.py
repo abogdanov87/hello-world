@@ -129,10 +129,6 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 
 class WorkplaceSerializer(serializers.ModelSerializer):
-    department = DepartmentSerializer()
-    position = PositionSerializer()
-    equipment = EquipmentSerializer(many = True)
-
     class Meta:
         model = Workplace
         fields = (
@@ -140,10 +136,32 @@ class WorkplaceSerializer(serializers.ModelSerializer):
             'code',
             'position',
             'department',
-            'equipment',
             'instruction_required',
             'active',
         )
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['department'] = DepartmentSerializer(
+            instance.department,
+        ).data
+        response['position'] = PositionSerializer(
+            instance.position,
+        ).data
+        response['equipment'] = EquipmentSerializer(
+            instance.equipment, many=True
+        ).data
+        return response
+
+    def update(self, instance, validated_data):
+        if validated_data.get('equipment'):
+            equipments = validated_data.pop('equipment')
+            instance.equipment.clear()
+            for equipment in equipments:
+                instance.equipment.add(equipment)
+
+        instance = super().update(instance, validated_data)
+        return instance
 
     def validate(self, data):
         return data
