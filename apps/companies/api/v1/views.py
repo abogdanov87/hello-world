@@ -125,3 +125,8 @@ class EmployeeListCreateAPIView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     filterset_class = EmployeeFilter
+
+
+class EmployeeRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Employee.objects.all()
+    serializer_class = EmployeeSerializer

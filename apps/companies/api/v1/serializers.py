@@ -168,6 +168,13 @@ class WorkplaceSerializer(serializers.ModelSerializer):
 
 
 class EmployeeSerializer(serializers.ModelSerializer):
+    workplace = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Workplace.objects.all(),
+        required=False,
+        allow_empty=True,
+    )
+
     class Meta:
         model = Employee
         fields = (
@@ -182,11 +189,21 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'employment_date',
             'pers_number',
             'avatar',
-            'insurance_number',
             'workplace',
+            'insurance_number',
             'fire_date',
             'company',
         )
+
+    def update(self, instance, validated_data):
+        if validated_data.get('workplace'):
+            workplaces = validated_data.pop('workplace')
+            instance.workplace.clear()
+            for workplace in workplaces:
+                instance.workplace.add(workplace)
+
+        instance = super().update(instance, validated_data)
+        return instance
 
     def validate(self, data):
         return data

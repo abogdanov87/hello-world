@@ -62,6 +62,11 @@ urlpatterns = [
         name='list',
     ),
     url(
+        r'^api/v1/employee/(?P<pk>\d+)/$',
+        api_v1_views.EmployeeRetrieveUpdateAPIView.as_view(),
+        name='detail',
+    ),
+    url(
         r'^api/v1/department-types/$',
         api_v1_views.DepartmentTypeListAPIView.as_view(),
         name='list',
