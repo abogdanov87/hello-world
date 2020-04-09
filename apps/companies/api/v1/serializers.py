@@ -129,14 +129,22 @@ class EquipmentSerializer(serializers.ModelSerializer):
 
 
 class WorkplaceSerializer(serializers.ModelSerializer):
+    equipment = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Equipment.objects.all(),
+        required=False,
+        allow_empty=True,
+    )
+
     class Meta:
         model = Workplace
-        fields = (
+        fields = ( 
             'id',
             'code',
             'position',
             'department',
             'instruction_required',
+            'equipment',
             'active',
         )
 
