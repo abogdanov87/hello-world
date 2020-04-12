@@ -57,12 +57,12 @@ urlpatterns = [
         name='list',
     ),
     url(
-        r'^api/v1/employee/$',
+        r'^api/v1/employees/$',
         api_v1_views.EmployeeListCreateAPIView.as_view(),
         name='list',
     ),
     url(
-        r'^api/v1/employee/(?P<pk>\d+)/$',
+        r'^api/v1/employees/(?P<pk>\d+)/$',
         api_v1_views.EmployeeRetrieveUpdateAPIView.as_view(),
         name='detail',
     ),
