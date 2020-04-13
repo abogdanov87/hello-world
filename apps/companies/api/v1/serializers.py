@@ -8,7 +8,7 @@ from companies.models import (
     EquipmentGroup,
     Equipment,
     Position,
-    Employee
+    Employee,
 )
 
 

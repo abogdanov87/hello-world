@@ -115,6 +115,11 @@ class PositionListCreateAPIView(generics.ListCreateAPIView):
     filterset_class = PositionFilter
 
 
+class PositionRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Position.objects.all()
+    serializer_class = PositionSerializer
+
+
 class EquipmentListCreateAPIView(generics.ListCreateAPIView):
     queryset = Equipment.objects.all()
     serializer_class = EquipmentSerializer

@@ -52,6 +52,11 @@ urlpatterns = [
         name='list',
     ),
     url(
+        r'^api/v1/positions/(?P<pk>\d+)/$',
+        api_v1_views.PositionRetrieveUpdateAPIView.as_view(),
+        name='detail',
+    ),
+    url(
         r'^api/v1/equipments/$',
         api_v1_views.EquipmentListCreateAPIView.as_view(),
         name='list',
