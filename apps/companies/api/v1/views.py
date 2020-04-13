@@ -126,6 +126,11 @@ class EquipmentListCreateAPIView(generics.ListCreateAPIView):
     filterset_class = EquipmentFilter
 
 
+class EquipmentRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Equipment.objects.all()
+    serializer_class = EquipmentSerializer
+
+
 class EmployeeListCreateAPIView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
