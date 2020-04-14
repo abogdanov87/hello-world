@@ -153,6 +153,11 @@ class Department(models.Model):
         blank=False, null=False,
         verbose_name=_('Компания'),
     )
+    order_num = models.PositiveIntegerField(
+        _('Порядок'),
+        blank=False, null=False,
+        default=1,
+    )
     active = models.BooleanField(
         _('Статус активности'),
         blank=False, null=False,
@@ -793,10 +798,20 @@ class Commission(models.Model):
     """
         Комиссия
     """
+    COMMISSION_TYPES = (
+        (0, 'Медицинское обследование'),
+        (1, 'Инструктаж'),
+    )
     num = models.PositiveIntegerField(
         _('№ п/п'),
         blank=False, null=False,
         default=1,
+    )
+    commission_type = models.PositiveIntegerField(
+        _('Вид комиссии'),
+        choices=COMMISSION_TYPES,
+        blank=False, null=False,
+        default=0,
     )
     name = models.CharField(
         _('Наименование'),
@@ -804,18 +819,80 @@ class Commission(models.Model):
         blank=False, null=False,
         default='',
     )
-    member_status = models.ForeignKey(
-        MemberStatus,
-        on_delete=models.PROTECT,
-        blank=False, null=False,
-        verbose_name=_('Статус участника'),
+    decree = models.CharField(
+        _('Приказ'),
+        max_length=255,
+        blank=True, null=True,
     )
-    employee = models.ForeignKey(
+    decree_date = models.DateField(
+        _('Дата приказа'),
+        blank=True, null=True,
+    )
+    employee = models.ManyToManyField(
         Employee,
-        on_delete=models.PROTECT,
-        blank=False, null=False,
         verbose_name=_('Сотрудник'),
+        through='CommissionEmployee',
+        through_fields=['commission', 'employee',],    
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
     )
 
     class Meta:
         db_table = 'commission'
+        verbose_name = _('Комиссия')
+        verbose_name_plural = _('Комиссии')
+
+    def __str__(self):
+        return '{}'.format(self.name)
+
+
+class CommissionEmployee(models.Model):
+    """
+        Комиссия - Сотрудник
+    """
+    MEMBER_STATUSES = (
+        (0, 'Участник'),
+        (1, 'Секретарь'),
+        (2, 'Председатель'),
+    )
+    commission = models.ForeignKey(
+        'Commission',
+        to_field='id',
+        on_delete=models.PROTECT,
+        verbose_name=_('Комиссия'),
+        blank=False, null=False,
+        db_column='commission_id',
+    )
+    employee = models.ForeignKey(
+        'Employee',
+        to_field='id',
+        on_delete=models.PROTECT,
+        verbose_name=_('Сотрудник'),
+        blank=False, null=False,
+        db_column='employee_id',
+    )
+    member_status = models.PositiveIntegerField(
+        _('Статус участника'),
+        choices=MEMBER_STATUSES,
+        blank=False, null=False,
+        default=0,
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'commission_employee'
+        verbose_name = _('Комиссия - Сотрудник')
+        verbose_name_plural = _('Комиссии - Сотрудники')
+
+    def __str__(self):
+        return '{} - {}'.format(self.commission.name, self.employee.last_name)
+
+    def member_status_name(self):
+        return self.get_member_status_display()

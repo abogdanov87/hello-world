@@ -11,6 +11,7 @@ from companies.models import (
     Equipment,
     Employee,
     DepartmentType,
+    CommissionEmployee,
 )
 from .serializers import (
     CompanySerializer, 
@@ -21,6 +22,7 @@ from .serializers import (
     EquipmentSerializer,
     EmployeeSerializer,
     DepartmentTypeSerializer,
+    CommissionEmployeeSerializer,
 )
 from .filters import (
     CompanyFilter, 
@@ -140,3 +142,9 @@ class EmployeeListCreateAPIView(generics.ListCreateAPIView):
 class EmployeeRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
+
+
+class CommissionEmployeeListCreateAPIView(generics.ListCreateAPIView):
+    queryset = CommissionEmployee.objects.all()
+    serializer_class = CommissionEmployeeSerializer
+    # filterset_class = EmployeeFilter

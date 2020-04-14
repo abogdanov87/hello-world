@@ -81,4 +81,9 @@ urlpatterns = [
         api_v1_views.DepartmentTypeListAPIView.as_view(),
         name='list',
     ),
+    url(
+        r'^api/v1/commission-employee/$',
+        api_v1_views.CommissionEmployeeListCreateAPIView.as_view(),
+        name='list',
+    ),
 ]

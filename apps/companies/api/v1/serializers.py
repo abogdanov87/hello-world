@@ -9,6 +9,8 @@ from companies.models import (
     Equipment,
     Position,
     Employee,
+    CommissionEmployee,
+    Commission,
 )
 
 
@@ -68,6 +70,7 @@ class DepartmentSerializer(serializers.ModelSerializer):
             'department_type',
             'parent',
             'company',
+            'order_num',
             'active',
         )
 
@@ -212,6 +215,49 @@ class EmployeeSerializer(serializers.ModelSerializer):
 
         instance = super().update(instance, validated_data)
         return instance
+
+    def validate(self, data):
+        return data
+
+
+class CommissionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Commission
+        fields = (
+            'id',
+            'num',
+            'commission_type',
+            'name',
+            'decree',
+            'decree_date',
+            'active',
+        )
+    
+    def validate(self, data):
+        return data
+
+
+class CommissionEmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CommissionEmployee
+        fields = (
+            'id',
+            'commission',
+            'employee',
+            'member_status',
+            'member_status_name',
+            'active',
+        )
+    
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['commission'] = CommissionSerializer(
+            instance.commission,
+        ).data
+        response['employee'] = EmployeeSerializer(
+            instance.employee,
+        ).data
+        return response
 
     def validate(self, data):
         return data

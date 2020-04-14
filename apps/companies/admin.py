@@ -11,6 +11,8 @@ from .models import (
     Equipment,
     Position,
     Employee,
+    CommissionEmployee,
+    Commission,
 )
 
 
@@ -154,3 +156,31 @@ class EmployeeAdmin(admin.ModelAdmin):
     ]
     list_display = ('pers_number', '__str__', 'company_name')
     list_display_links = ('pers_number', '__str__',)
+
+
+@admin.register(CommissionEmployee)
+class CommissionEmployeeAdmin(admin.ModelAdmin):
+    model = CommissionEmployee
+    fields = [
+        'commission',
+        'employee',
+        'member_status',
+        'active',
+    ]
+    list_display = ('__str__',)
+    list_display_links = ('__str__',)
+
+
+@admin.register(Commission)
+class CommissionAdmin(admin.ModelAdmin):
+    model = Commission
+    fields = [
+        'num',
+        'commission_type',
+        'name',
+        'decree',
+        'decree_date',
+        'active',
+    ]
+    list_display = ('__str__',)
+    list_display_links = ('__str__',)
