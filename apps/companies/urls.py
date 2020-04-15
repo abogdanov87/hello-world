@@ -82,8 +82,23 @@ urlpatterns = [
         name='list',
     ),
     url(
-        r'^api/v1/commission-employee/$',
+        r'^api/v1/commissions-employees/$',
         api_v1_views.CommissionEmployeeListCreateAPIView.as_view(),
         name='list',
+    ),
+    url(
+        r'^api/v1/commissions-employees/(?P<pk>\d+)/$',
+        api_v1_views.CommissionEmployeeRetrieveUpdateAPIView.as_view(),
+        name='detail',
+    ),
+    url(
+        r'^api/v1/commissions/$',
+        api_v1_views.CommissionListCreateAPIView.as_view(),
+        name='list',
+    ),
+    url(
+        r'^api/v1/commissions/(?P<pk>\d+)/$',
+        api_v1_views.CommissionRetrieveUpdateAPIView.as_view(),
+        name='detail',
     ),
 ]

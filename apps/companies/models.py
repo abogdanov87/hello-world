@@ -799,8 +799,8 @@ class Commission(models.Model):
         Комиссия
     """
     COMMISSION_TYPES = (
-        (0, 'Медицинское обследование'),
-        (1, 'Инструктаж'),
+        (1, 'Медицинское обследование'),
+        (2, 'Инструктаж'),
     )
     num = models.PositiveIntegerField(
         _('№ п/п'),
@@ -811,7 +811,7 @@ class Commission(models.Model):
         _('Вид комиссии'),
         choices=COMMISSION_TYPES,
         blank=False, null=False,
-        default=0,
+        default=1,
     )
     name = models.CharField(
         _('Наименование'),
@@ -834,6 +834,12 @@ class Commission(models.Model):
         through='CommissionEmployee',
         through_fields=['commission', 'employee',],    
     )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+        verbose_name=_('Компания'),
+    )
     active = models.BooleanField(
         _('Статус активности'),
         blank=False, null=False,
@@ -854,9 +860,9 @@ class CommissionEmployee(models.Model):
         Комиссия - Сотрудник
     """
     MEMBER_STATUSES = (
-        (0, 'Участник'),
-        (1, 'Секретарь'),
-        (2, 'Председатель'),
+        (1, 'Председатель'),
+        (2, 'Секретарь'),
+        (3, 'Участник'),
     )
     commission = models.ForeignKey(
         'Commission',
@@ -878,7 +884,7 @@ class CommissionEmployee(models.Model):
         _('Статус участника'),
         choices=MEMBER_STATUSES,
         blank=False, null=False,
-        default=0,
+        default=3,
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -893,6 +899,3 @@ class CommissionEmployee(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.commission.name, self.employee.last_name)
-
-    def member_status_name(self):
-        return self.get_member_status_display()

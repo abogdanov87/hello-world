@@ -230,9 +230,14 @@ class CommissionSerializer(serializers.ModelSerializer):
             'name',
             'decree',
             'decree_date',
+            'company',
             'active',
         )
-    
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        return response
+
     def validate(self, data):
         return data
 
@@ -245,7 +250,6 @@ class CommissionEmployeeSerializer(serializers.ModelSerializer):
             'commission',
             'employee',
             'member_status',
-            'member_status_name',
             'active',
         )
     

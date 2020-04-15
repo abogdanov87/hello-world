@@ -12,6 +12,7 @@ from companies.models import (
     Employee,
     DepartmentType,
     CommissionEmployee,
+    Commission,
 )
 from .serializers import (
     CompanySerializer, 
@@ -23,6 +24,7 @@ from .serializers import (
     EmployeeSerializer,
     DepartmentTypeSerializer,
     CommissionEmployeeSerializer,
+    CommissionSerializer,
 )
 from .filters import (
     CompanyFilter, 
@@ -31,6 +33,7 @@ from .filters import (
     PositionFilter,
     EquipmentFilter,
     EmployeeFilter,
+    CommissionFilter,
 )
 
 
@@ -147,4 +150,33 @@ class EmployeeRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
 class CommissionEmployeeListCreateAPIView(generics.ListCreateAPIView):
     queryset = CommissionEmployee.objects.all()
     serializer_class = CommissionEmployeeSerializer
-    # filterset_class = EmployeeFilter
+    
+    def get_queryset(self):
+        queryset = CommissionEmployee.objects.all()
+        company = self.request.query_params.get('company', None)
+        if company is not None:
+            queryset = queryset.filter(commission__company=company)
+        return queryset
+
+
+class CommissionEmployeeRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = CommissionEmployee.objects.all()
+    serializer_class = CommissionEmployeeSerializer
+    
+    def get_queryset(self):
+        queryset = CommissionEmployee.objects.all()
+        company = self.request.query_params.get('company', None)
+        if company is not None:
+            queryset = queryset.filter(commission__company=company)
+        return queryset
+
+
+class CommissionListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Commission.objects.all()
+    serializer_class = CommissionSerializer
+    filterset_class = CommissionFilter
+
+
+class CommissionRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Commission.objects.all()
+    serializer_class = CommissionSerializer

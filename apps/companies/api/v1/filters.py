@@ -6,6 +6,7 @@ from companies.models import (
     Position,
     Equipment,
     Employee,
+    Commission,
 )
 
 
@@ -43,3 +44,9 @@ class EmployeeFilter(filters.FilterSet):
     class Meta:
         model = Employee
         fields = ('workplace', 'company')
+
+
+class CommissionFilter(filters.FilterSet):
+    class Meta:
+        model = Commission
+        fields = ('company',)
