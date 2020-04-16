@@ -101,4 +101,24 @@ urlpatterns = [
         api_v1_views.CommissionRetrieveUpdateAPIView.as_view(),
         name='detail',
     ),
+    url(
+        r'^api/v1/events/$',
+        api_v1_views.EventListCreateAPIView.as_view(),
+        name='list',
+    ),
+    url(
+        r'^api/v1/events/(?P<pk>\d+)/$',
+        api_v1_views.EventRetrieveUpdateAPIView.as_view(),
+        name='detail',
+    ),
+    url(
+        r'^api/v1/events-employees/$',
+        api_v1_views.EventEmployeeListCreateAPIView.as_view(),
+        name='list',
+    ),
+    url(
+        r'^api/v1/events-employees/(?P<pk>\d+)/$',
+        api_v1_views.EventEmployeeRetrieveUpdateAPIView.as_view(),
+        name='detail',
+    ),
 ]

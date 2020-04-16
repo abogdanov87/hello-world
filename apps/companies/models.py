@@ -899,3 +899,115 @@ class CommissionEmployee(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.commission.name, self.employee.last_name)
+
+
+class Event(models.Model):
+    """
+        Мероприятие
+    """
+    EVENT_TYPES = (
+        (1, 'Медицинское обследование'),
+        (2, 'Инструктаж'),
+        (3, 'Обучение'),
+    )
+    FREQUENCY = (
+        ('1/m', 'Раз в месяц'),
+        ('1/q', 'Раз в квартал'),
+        ('2/y', 'Два раза в год'),
+        ('1/y', 'Раз в год'),
+        ('1/2y', 'Раз в два года'),
+        ('1/w', 'Раз в неделю'),
+    )
+    event_type = models.PositiveIntegerField(
+        _('Тип мероприятия'),
+        choices=EVENT_TYPES,
+        blank=False, null=False,
+        default=1,
+    )
+    name = models.CharField(
+        _('Наименование'),
+        max_length=2000,
+        blank=False, null=False,
+        default='',
+    )
+    event_date = models.DateField(
+        _('Дата мероприятия'),
+        blank=False, null=False,
+        default=datetime.date.today,
+    )
+    frequency = models.CharField(
+        _('Тип мероприятия'),
+        max_length=20,
+        choices=FREQUENCY,
+        blank=False, null=False,
+        default='1/m',
+    )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+        verbose_name=_('Компания'),
+    )
+    employee = models.ManyToManyField(
+        Employee,
+        verbose_name=_('Сотрудник'),
+        through='EventEmployee',
+        through_fields=['event', 'employee',],    
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'event'
+        verbose_name = _('Мероприятие')
+        verbose_name_plural = _('Мероприятия')
+
+    def __str__(self):
+        return self.name
+
+
+class EventEmployee(models.Model):
+    """
+        Комиссия - Сотрудник
+    """
+    event = models.ForeignKey(
+        'Event',
+        to_field='id',
+        on_delete=models.PROTECT,
+        verbose_name=_('Мероприятие'),
+        blank=False, null=False,
+        db_column='event_id',
+    )
+    employee = models.ForeignKey(
+        'Employee',
+        to_field='id',
+        on_delete=models.PROTECT,
+        verbose_name=_('Сотрудник'),
+        blank=False, null=False,
+        db_column='employee_id',
+    )
+    event_date = models.DateField(
+        _('Дата мероприятия'),
+        blank=True, null=True,
+    )
+    certificate = models.CharField(
+        _('Сертификат'),
+        max_length=255,
+        blank=True, null=True,
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'event_employee'
+        verbose_name = _('Мероприятие - Сотрудник')
+        verbose_name_plural = _('Мероприятия - Сотрудники')
+
+    def __str__(self):
+        return '{} - {}'.format(self.event.name, self.employee.last_name)

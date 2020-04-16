@@ -13,6 +13,8 @@ from companies.models import (
     DepartmentType,
     CommissionEmployee,
     Commission,
+    Event,
+    EventEmployee,
 )
 from .serializers import (
     CompanySerializer, 
@@ -25,6 +27,8 @@ from .serializers import (
     DepartmentTypeSerializer,
     CommissionEmployeeSerializer,
     CommissionSerializer,
+    EventSerializer,
+    EventEmployeeSerializer,
 )
 from .filters import (
     CompanyFilter, 
@@ -34,6 +38,7 @@ from .filters import (
     EquipmentFilter,
     EmployeeFilter,
     CommissionFilter,
+    EventFilter,
 )
 
 
@@ -180,3 +185,38 @@ class CommissionListCreateAPIView(generics.ListCreateAPIView):
 class CommissionRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Commission.objects.all()
     serializer_class = CommissionSerializer
+
+
+class EventListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+    filterset_class = EventFilter
+
+
+class EventRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = Event.objects.all()
+    serializer_class = EventSerializer
+
+
+class EventEmployeeListCreateAPIView(generics.ListCreateAPIView):
+    queryset = EventEmployee.objects.all()
+    serializer_class = EventEmployeeSerializer
+    
+    def get_queryset(self):
+        queryset = EventEmployee.objects.all()
+        company = self.request.query_params.get('company', None)
+        if company is not None:
+            queryset = queryset.filter(event__company=company)
+        return queryset
+
+
+class EventEmployeeRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = EventEmployee.objects.all()
+    serializer_class = EventEmployeeSerializer
+    
+    def get_queryset(self):
+        queryset = EventEmployee.objects.all()
+        company = self.request.query_params.get('company', None)
+        if company is not None:
+            queryset = queryset.filter(event__company=company)
+        return queryset

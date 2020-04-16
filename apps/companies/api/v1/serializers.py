@@ -11,6 +11,8 @@ from companies.models import (
     Employee,
     CommissionEmployee,
     Commission,
+    Event,
+    EventEmployee,
 )
 
 
@@ -257,6 +259,56 @@ class CommissionEmployeeSerializer(serializers.ModelSerializer):
         response = super().to_representation(instance)
         response['commission'] = CommissionSerializer(
             instance.commission,
+        ).data
+        response['employee'] = EmployeeSerializer(
+            instance.employee,
+        ).data
+        return response
+
+    def validate(self, data):
+        return data
+
+
+class EventSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Event
+        fields = (
+            'id',
+            'event_type',
+            'name',
+            'event_date',
+            'frequency',
+            'company',
+            'active',
+        )
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['employee'] = EmployeeSerializer(
+            instance.employee, many=True
+        ).data
+        return response
+
+    def validate(self, data):
+        return data
+
+
+class EventEmployeeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EventEmployee
+        fields = (
+            'id',
+            'event',
+            'employee',
+            'event_date',
+            'certificate',
+            'active',
+        )
+    
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['event'] = EventSerializer(
+            instance.event,
         ).data
         response['employee'] = EmployeeSerializer(
             instance.employee,
