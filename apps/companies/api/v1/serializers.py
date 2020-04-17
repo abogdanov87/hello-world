@@ -140,6 +140,12 @@ class WorkplaceSerializer(serializers.ModelSerializer):
         required=False,
         allow_empty=True,
     )
+    employees = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=Employee.objects.all(),
+        required=False,
+        allow_empty=True,
+    ) 
 
     class Meta:
         model = Workplace
@@ -150,6 +156,7 @@ class WorkplaceSerializer(serializers.ModelSerializer):
             'department',
             'instruction_required',
             'equipment',
+            'employees',
             'active',
         )
 
@@ -161,7 +168,7 @@ class WorkplaceSerializer(serializers.ModelSerializer):
         response['position'] = PositionSerializer(
             instance.position,
         ).data
-        response['equipment'] = EquipmentSerializer(
+        response['equipment_list'] = EquipmentSerializer(
             instance.equipment, many=True
         ).data
         return response
@@ -279,6 +286,7 @@ class EventSerializer(serializers.ModelSerializer):
             'event_date',
             'frequency',
             'company',
+            'commission',
             'active',
         )
 

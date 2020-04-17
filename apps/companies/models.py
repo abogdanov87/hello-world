@@ -412,6 +412,7 @@ class Employee(models.Model):
     workplace = models.ManyToManyField(
         Workplace,
         verbose_name=_('Рабочее место'),
+        related_name='employees',
     )
     fire_date = models.DateField(
         _('Дата увольнения'),
@@ -911,6 +912,7 @@ class Event(models.Model):
         (3, 'Обучение'),
     )
     FREQUENCY = (
+        ('1/t', 'Единоразово'),
         ('1/m', 'Раз в месяц'),
         ('1/q', 'Раз в квартал'),
         ('2/y', 'Два раза в год'),
@@ -936,11 +938,11 @@ class Event(models.Model):
         default=datetime.date.today,
     )
     frequency = models.CharField(
-        _('Тип мероприятия'),
+        _('Периодичность'),
         max_length=20,
         choices=FREQUENCY,
         blank=False, null=False,
-        default='1/m',
+        default='1/t',
     )
     company = models.ForeignKey(
         Company,
@@ -953,6 +955,12 @@ class Event(models.Model):
         verbose_name=_('Сотрудник'),
         through='EventEmployee',
         through_fields=['event', 'employee',],    
+    )
+    commission = models.ForeignKey(
+        Commission,
+        on_delete=models.PROTECT,
+        blank=True, null=True,
+        verbose_name=_('Комиссия'),
     )
     active = models.BooleanField(
         _('Статус активности'),
