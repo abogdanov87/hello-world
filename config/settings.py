@@ -1,4 +1,4 @@
-SERVER = 'DEVELOP'
+SERVER = 'TEST'
 
 if SERVER == 'TEST':
     from .test import *
