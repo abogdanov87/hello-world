@@ -1,7 +1,7 @@
-SERVER = 'TEST'
+SERVER = 'DEVELOP'
 
-if SERVER = 'TEST':
+if SERVER == 'TEST':
     from .test import *
 
-if SERVER = 'DEVELOP':
+if SERVER == 'DEVELOP':
     from .base import *
