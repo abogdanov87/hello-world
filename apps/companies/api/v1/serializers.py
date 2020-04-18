@@ -55,6 +55,7 @@ class DepartmentTypeSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
+            'order_num',
             'active',
         )
 

@@ -75,6 +75,7 @@ class DepartmentTypeAdmin(admin.ModelAdmin):
     model = DepartmentType
     fields = [
         'name',
+        'order_num',
         'active',
     ]
     list_display = ('name',)

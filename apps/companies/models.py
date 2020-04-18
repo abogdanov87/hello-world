@@ -104,6 +104,11 @@ class DepartmentType(models.Model):
         blank=False, null=False,
         default='',
     )
+    order_num = models.PositiveIntegerField(
+        _('Порядок'),
+        blank=False, null=False,
+        default=1,
+    )
     active = models.BooleanField(
         _('Статус активности'),
         blank=False, null=False,
