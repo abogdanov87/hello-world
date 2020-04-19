@@ -1,0 +1,14 @@
+{% load static %}
+{% load render_bundle from webpack_loader %}
+
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Колибри</title>
+</head>
+<body>
+<section id="container"></section>
+{% render_bundle 'main' %}
+</body>
+</html>
