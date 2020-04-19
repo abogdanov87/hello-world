@@ -20,6 +20,7 @@ from django.conf.urls import include
 from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from companies import token
 from django.contrib.auth import views as auth_views
+from django.views.generic.base import RedirectView, TemplateView
 
 auth_token_urls = [
     url(
@@ -51,6 +52,7 @@ urlpatterns = [
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
     path('', include('companies.urls', namespace='companies')),
+    url(r'^$', TemplateView.as_view(template_name='index.html'), name='index'),
 ]
 
 urlpatterns += auth_token_urls
