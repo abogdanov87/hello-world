@@ -42,7 +42,7 @@ class User(AbstractUser):
     )
 
     class Meta:
-        db_table = 'user'
+        db_table = 'auth_user'
         verbose_name = _('Пользователь')
         verbose_name_plural = _('Пользователи')
 
