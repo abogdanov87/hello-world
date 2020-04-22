@@ -846,6 +846,12 @@ class Commission(models.Model):
         blank=False, null=False,
         verbose_name=_('Компания'),
     )
+    document_template = models.ForeignKey(
+        'documents.DocumentTemplate',
+        on_delete=models.PROTECT,
+        blank=True, null=True,
+        verbose_name=_('Шаблон'),
+    )
     active = models.BooleanField(
         _('Статус активности'),
         blank=False, null=False,

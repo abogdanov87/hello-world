@@ -114,3 +114,4 @@ venv.bak/
 _windows
 .DS_Store
 config.yml
+files/
