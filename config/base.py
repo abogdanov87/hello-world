@@ -55,6 +55,7 @@ INSTALLED_APPS = [
 
     # project apps
     'companies',
+    'documents',
 ]
 
 MIDDLEWARE = [
@@ -183,3 +184,6 @@ WEBPACK_LOADER = {
         'LOADER_CLASS': 'webpack_loader.loader.WebpackLoader',
     },
 }
+
+MEDIA_ROOT = os.path.join(BASE_DIR, '', 'files/')
+MEDIA_URL = '/files/'

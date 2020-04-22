@@ -1,4 +1,7 @@
 from rest_framework import serializers
+from apps.documents.api.v1.serializers import (
+    DocumentTemplateSerializer,
+)
 from companies.models import (
     Company, 
     User, 
@@ -241,11 +244,15 @@ class CommissionSerializer(serializers.ModelSerializer):
             'decree',
             'decree_date',
             'company',
+            'document_template',
             'active',
         )
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
+        response['document_template'] = DocumentTemplateSerializer(
+            instance.document_template,
+        ).data
         return response
 
     def validate(self, data):

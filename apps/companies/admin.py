@@ -182,6 +182,7 @@ class CommissionAdmin(admin.ModelAdmin):
         'name',
         'decree',
         'decree_date',
+        'document_template',
         'active',
     ]
     list_display = ('__str__',)

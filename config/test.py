@@ -18,7 +18,7 @@ DATABASES = {
     }
 }
 
-BASE_URL = 'http://www.qolibri24.ru/'
+BASE_URL = 'http://www.qolibri24.ru'
 LOGIN_FORM_URL = BASE_URL + '/admin/json/api-auth/login/'
 HOME_FORM_URL = BASE_URL + '/#/companies/'
 
