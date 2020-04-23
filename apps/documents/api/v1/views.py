@@ -80,14 +80,15 @@ class DocumentRetrieveAPIView(generics.RetrieveAPIView):
         return Response({ 'error': 'The file does not exist!', 'data': super_get.data }, status.HTTP_404_NOT_FOUND)
 
 
-class DocumentCreateAPIView(generics.CreateAPIView):
+class DocumentCreateAPIView(generics.ListCreateAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
 
     def post(self, request, format=None):
         new_id = uuid.uuid4()
         request.data.update({
-            'id': new_id
+            'id': new_id,
+            'user': request.user.id,
         })
         resp = super().post(request, format)
         doc = DocxTemplate(os.path.join(settings.MEDIA_ROOT, resp.data['document_template']['get_file_template_name']))
@@ -104,20 +105,20 @@ class DocumentTemplateListCreateAPIView(generics.ListCreateAPIView):
     filterset_class = DocumentTemplateFilter
 
     def post(self, request, format=None):
-        instance = DocumentTemplate(
-            name=request.data['file_name'],
-            file_template=request.FILES['file'],
-            company=Company.objects.get(pk=request.data['company']),
-            active=True
-        )
         try:
+            instance = DocumentTemplate(
+                name=request.data['file_name'],
+                file_template=request.FILES['file'],
+                company=Company.objects.get(pk=request.data['company']),
+                active=True
+            )
             instance.save()
             commission = Commission.objects.get(pk=request.data['commission'])
             commission.document_template = instance
             commission.save()
             return Response(DocumentTemplateSerializer(instance).data, status.HTTP_201_CREATED)
         except Exception as e:
-            return Response(e, status.HTTP_400_BAD_REQUEST)
+            return Response({'message': 'no changes'}, status.HTTP_200_OK)
 
 
 class DocumentTemplateRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
