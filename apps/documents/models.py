@@ -80,6 +80,12 @@ class Document(models.Model):
         blank=False, null=False,
         verbose_name=_('Шаблон'),
     )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+        verbose_name=_('Пользователь'),
+    )
 
     class Meta:
         db_table = 'document'

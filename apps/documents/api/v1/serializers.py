@@ -31,6 +31,7 @@ class DocumentSerializer(serializers.ModelSerializer):
             'id',
             'created',
             'document_template',
+            'user',
         )
 
     def to_representation(self, instance):
