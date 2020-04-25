@@ -157,16 +157,6 @@ class EmployeeListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = EmployeeSerializer
     filterset_class = EmployeeFilter
 
-    def post(self, request, format=None):
-        size = 32, 32
-        f = request.FILES['avatar']
-        im = Image.open(f)
-        im.thumbnail(size)
-        import pdb; pdb.set_trace()
-        im.save(f.name + ".thumbnail", "JPEG")
-        resp = super().post(request, format)
-        return Response(resp.data, status.HTTP_201_CREATED)
-
 
 class EmployeeRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = Employee.objects.all()
