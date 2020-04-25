@@ -1,6 +1,10 @@
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from PIL import Image
+import glob, os
+from django.conf import settings
+
 
 from companies.models import (
     Company, 
@@ -39,6 +43,7 @@ from .filters import (
     EmployeeFilter,
     CommissionFilter,
     EventFilter,
+    DepartmentTypeFilter,
 )
 
 
@@ -114,7 +119,13 @@ class DepartmentRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = DepartmentSerializer
 
 
-class DepartmentTypeListAPIView(generics.ListAPIView):
+class DepartmentTypeListCreateAPIView(generics.ListCreateAPIView):
+    queryset = DepartmentType.objects.all()
+    serializer_class = DepartmentTypeSerializer
+    filterset_class = DepartmentTypeFilter
+
+
+class DepartmentTypeRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = DepartmentType.objects.all()
     serializer_class = DepartmentTypeSerializer
 
@@ -145,6 +156,16 @@ class EmployeeListCreateAPIView(generics.ListCreateAPIView):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     filterset_class = EmployeeFilter
+
+    def post(self, request, format=None):
+        size = 32, 32
+        f = request.FILES['avatar']
+        im = Image.open(f)
+        im.thumbnail(size)
+        import pdb; pdb.set_trace()
+        im.save(f.name + ".thumbnail", "JPEG")
+        resp = super().post(request, format)
+        return Response(resp.data, status.HTTP_201_CREATED)
 
 
 class EmployeeRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):

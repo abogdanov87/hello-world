@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib.auth.admin import UserAdmin
 
 # Register your models here.
 from .models import (
@@ -32,25 +33,8 @@ class CompanyAdmin(admin.ModelAdmin):
 
 
 @admin.register(User)
-class UserAdmin(admin.ModelAdmin):
+class MyUserAdmin(UserAdmin):
     model = User
-    fields = [
-        'last_login',
-        'is_superuser',
-        'username',
-        'password',
-        'is_staff',
-        'is_active',
-        'date_joined',
-        'first_name',
-        'last_name',
-        'middle_name',
-        'email',
-        'avatar',
-        'password_change_date',
-        'groups',
-        'user_permissions',
-    ]
     list_display = ('id', 'username', 'last_name', 'first_name')
     list_display_links = ('username',)
 

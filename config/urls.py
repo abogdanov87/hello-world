@@ -21,6 +21,8 @@ from rest_framework_simplejwt.views import TokenRefreshView, TokenVerifyView
 from companies import token
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import RedirectView, TemplateView
+from django.conf import settings
+from django.conf.urls.static import static
 
 auth_token_urls = [
     url(
@@ -58,3 +60,4 @@ urlpatterns = [
 
 urlpatterns += auth_token_urls
 urlpatterns += auth_urls
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
