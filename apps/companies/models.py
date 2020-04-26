@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 import datetime
 from django.utils import timezone
 from django.conf import settings
+from easy_thumbnails.fields import ThumbnailerImageField
 
 from django.utils.translation import gettext_lazy as _
 
@@ -31,10 +32,11 @@ class User(AbstractUser):
         _('Адрес электронной почты'),
         blank=True, null=True,
     )
-    avatar = models.CharField(
+    avatar = ThumbnailerImageField(
         _('Аватарка'),
-        max_length=255,
+        upload_to ='avatars/',
         blank=True, null=True,
+        resize_source=dict(size=(128, 128), sharpen=True),
     )
     password_change_date = models.DateTimeField(
         _('Дата изменения пароля'),
@@ -69,10 +71,11 @@ class Company(models.Model):
         blank=False, null=False,
         default='',
     )
-    badge = models.CharField(
+    badge = ThumbnailerImageField(
         _('Логотип'),
-        max_length=255,
+        upload_to ='badges/',
         blank=True, null=True,
+        resize_source=dict(size=(128, 128), sharpen=True),
     )
     user = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
@@ -108,6 +111,12 @@ class DepartmentType(models.Model):
         _('Порядок'),
         blank=False, null=False,
         default=1,
+    )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.PROTECT,
+        blank=False, null=False,
+        verbose_name=_('Компания'),
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -403,10 +412,11 @@ class Employee(models.Model):
         blank=False, null=False,
         default='',
     )
-    avatar = models.CharField(
+    avatar = ThumbnailerImageField(
         _('Аватарка'),
-        max_length=255,
+        upload_to ='avatars/',
         blank=True, null=True,
+        resize_source=dict(size=(128, 128), sharpen=True),
     )
     insurance_number = models.CharField(
         _('Страховой номер (СНИЛС)'),

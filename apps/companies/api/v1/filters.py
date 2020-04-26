@@ -8,6 +8,7 @@ from companies.models import (
     Employee,
     Commission,
     Event,
+    DepartmentType,
 )
 
 
@@ -26,6 +27,12 @@ class WorkplaceFilter(filters.FilterSet):
 class DepartmentFilter(filters.FilterSet):
     class Meta:
         model = Department
+        fields = ('active', 'company')
+
+    
+class DepartmentTypeFilter(filters.FilterSet):
+    class Meta:
+        model = DepartmentType
         fields = ('active', 'company')
 
 

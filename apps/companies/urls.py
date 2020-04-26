@@ -78,8 +78,13 @@ urlpatterns = [
     ),
     url(
         r'^api/v1/department-types/$',
-        api_v1_views.DepartmentTypeListAPIView.as_view(),
+        api_v1_views.DepartmentTypeListCreateAPIView.as_view(),
         name='list',
+    ),
+    url(
+        r'^api/v1/department-types/(?P<pk>\d+)/$',
+        api_v1_views.DepartmentTypeRetrieveUpdateAPIView.as_view(),
+        name='detail',
     ),
     url(
         r'^api/v1/commissions-employees/$',

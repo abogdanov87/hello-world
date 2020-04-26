@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'djoser',
     'rest_framework',
     'webpack_loader',
+    'easy_thumbnails',
 
     # project apps
     'companies',

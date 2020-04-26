@@ -59,6 +59,7 @@ class DepartmentTypeSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'order_num',
+            'company',
             'active',
         )
 
