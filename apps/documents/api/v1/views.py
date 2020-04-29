@@ -84,6 +84,11 @@ class DocumentCreateAPIView(generics.ListCreateAPIView):
     queryset = Document.objects.all()
     serializer_class = DocumentSerializer
 
+    def get(self, request, format=None):
+        queryset = Document.objects.filter(user=request.user.id)
+        serializer = DocumentSerializer(queryset, many=True)
+        return Response(serializer.data)
+
     def post(self, request, format=None):
         new_id = uuid.uuid4()
         request.data.update({
