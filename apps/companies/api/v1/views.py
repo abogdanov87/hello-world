@@ -58,7 +58,8 @@ class CompanyListCreateAPIView(generics.ListCreateAPIView):
     def create(self, request, *args, **kwargs):
         if request.user:
             request.data.update({
-                'user': [ request.user.id ]
+                'user': request.user.id,
+                'active': True,
             })
         serializer = self.get_serializer(
             data=request.data, many=isinstance(request.data, list),
