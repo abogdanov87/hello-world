@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'webpack_loader',
     'easy_thumbnails',
+    'transliterate',
 
     # project apps
     'companies',

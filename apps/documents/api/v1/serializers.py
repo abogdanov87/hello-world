@@ -2,10 +2,30 @@ from rest_framework import serializers
 from documents.models import (
     DocumentTemplate,
     Document,
+    DocumentTemplateParam,
 )
 
 
+class DocumentTemplateParamSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DocumentTemplateParam
+        fields = (
+            'id',
+            'code',
+            'name',
+            'value_type',
+            'value',
+            'document_template',
+            'active',
+        )
+
+    def validate(self, data):
+        return data
+
+
 class DocumentTemplateSerializer(serializers.ModelSerializer):
+    document_template_params = DocumentTemplateParamSerializer(many=True)
+
     class Meta:
         model = DocumentTemplate
         fields = (
@@ -14,7 +34,9 @@ class DocumentTemplateSerializer(serializers.ModelSerializer):
             'file_template',
             'get_file_template_name',
             'params',
+            'document_template_params',
             'company',
+            'template',
             'active',
         )
 
