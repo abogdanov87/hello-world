@@ -8,6 +8,8 @@ from docxtpl import DocxTemplate
 from django.conf import settings
 import uuid
 import random
+import json
+from transliterate import translit, get_available_language_codes
 
 from companies.models import (
     Company,
@@ -20,9 +22,11 @@ from companies.api.v1.serializers import (
 from documents.models import (
     DocumentTemplate,
     Document,
+    DocumentTemplateParam,
 )
 from .serializers import (
     DocumentTemplateSerializer,
+    DocumentTemplateParamSerializer,
     DocumentSerializer,
 )
 from .filters import (
@@ -111,21 +115,81 @@ class DocumentTemplateListCreateAPIView(generics.ListCreateAPIView):
 
     def post(self, request, format=None):
         try:
-            instance = DocumentTemplate(
-                name=request.data['file_name'],
-                file_template=request.FILES['file'],
-                company=Company.objects.get(pk=request.data['company']),
-                active=True
-            )
+            active = str(request.data.get('active', True)).lower() == 'true'
+            template = request.FILES.get('file', None)
+            is_new = True if request.data.get('id', None) is None else False
+            if is_new:
+                if template is None:
+                    instance = DocumentTemplate(
+                        id=request.data.get('id', None),
+                        name=request.data.get('file_name', request.data['name']),
+                        company=Company.objects.get(pk=request.data['company']),
+                        params=request.data.get('params', None),
+                        active=active,
+                        template=False,
+                    )
+                else :
+                    instance = DocumentTemplate(
+                        id=request.data.get('id', None),
+                        name=request.data.get('file_name', request.data['name']),
+                        file_template=template,
+                        company=Company.objects.get(pk=request.data['company']),
+                        params=request.data.get('params', None),
+                        active=active,
+                        template=False,
+                    )
+            else:
+                instance = DocumentTemplate.objects.get(pk=request.data.get('id', None))
+                instance.name = request.data.get('file_name', request.data['name'])
+                instance.params = request.data.get('params', None)
+                instance.active = active
+                if not template is None: 
+                    instance.file_template = template
             instance.save()
-            commission = Commission.objects.get(pk=request.data['commission'])
-            commission.document_template = instance
-            commission.save()
+            document_template_params = json.loads(request.data.get('document_template_params', None))
+            if not document_template_params is None and instance:
+                for dtp in document_template_params:
+                    dtp.update({
+                        'code': translit(dtp['name'], 'ru', reversed=True).lower().replace(' ', '_').replace('%', 'percent'),
+                        'value': '' if str(dtp['value']) == 'None' else str(dtp['value']),
+                        'document_template': instance.id
+                    })
+                    if not dtp.get('id', None) is None and dtp.get('id', None) > 0:
+                        dtp_instance = DocumentTemplateParam.objects.get(pk=dtp['id'])
+                        dtp_serializer = DocumentTemplateParamSerializer(dtp_instance, data=dtp)
+                    else:
+                        dtp_serializer = DocumentTemplateParamSerializer(data=dtp)
+                    if dtp_serializer.is_valid():
+                        dtp_serializer.save()
+            if not request.data.get('commission', None) is None and instance:
+                commission = Commission.objects.get(pk=request.data['commission'])
+                commission.document_template = instance
+                commission.save()
             return Response(DocumentTemplateSerializer(instance).data, status.HTTP_201_CREATED)
         except Exception as e:
-            return Response({'message': 'no changes'}, status.HTTP_200_OK)
+            return Response({'error': str(e)}, status.HTTP_400_BAD_REQUEST)
 
 
 class DocumentTemplateRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = DocumentTemplate.objects.all()
     serializer_class = DocumentTemplateSerializer
+
+    def get(self, request, pk, format=None):
+        super_get = super().get(request, pk, format)
+        file_path = os.path.join(
+            settings.MEDIA_ROOT, 
+            '{}'.format(
+                super_get.data['get_file_template_name'], 
+            ),
+        )
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        return Response({ 
+                'error': 'The file does not exist!', 
+                'data': super_get.data,
+            }, 
+            status.HTTP_404_NOT_FOUND
+        )

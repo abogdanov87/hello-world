@@ -47,6 +47,11 @@ class DocumentTemplate(models.Model):
         blank=False, null=False,
         default=True,
     )
+    template = models.BooleanField(
+        _('Шаблон'),
+        blank=False, null=False,
+        default=False,
+    )
 
     class Meta:
         db_table = 'document_template'
@@ -58,6 +63,63 @@ class DocumentTemplate(models.Model):
 
     def get_file_template_name(self):
         return self.file_template.name
+
+
+class DocumentTemplateParam(models.Model):
+    """
+        Дополнительный параметр шаблона документа 
+    """
+    VALUE_TYPES = (
+        ('number', 'Число'),
+        ('text', 'Строка'),
+        ('date', 'Дата'),
+        ('boolean', 'Булево'),
+    )
+
+    code = models.CharField(
+        _('Код'),
+        max_length=255,
+        blank=False, null=False,
+        default='',
+    )
+    name = models.CharField(
+        _('Название'),
+        max_length=255,
+        blank=False, null=False,
+        default='',
+    )
+    value_type = models.CharField(
+        _('Формат значения'),
+        max_length=10,
+        choices=VALUE_TYPES,
+        blank=False, null=False,
+        default='number',
+    )
+    value = models.CharField(
+        _('Значение'),
+        max_length=2000,
+        blank=True, null=True,
+    )
+    document_template = models.ForeignKey(
+        DocumentTemplate,
+        on_delete=models.PROTECT,
+        related_name='document_template_params',
+        blank=False, null=False,
+        verbose_name=_('Шаблон'),
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'document_template_param'
+        verbose_name = _('Параметр шаблона документа')
+        verbose_name_plural = _('Параметры шаблона документа')
+
+    def __str__(self):
+        return '{} ({})'.format(self.name, self.document_template.name)
 
 
 class Document(models.Model):

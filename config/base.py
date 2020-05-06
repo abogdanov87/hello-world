@@ -15,9 +15,11 @@ import sys
 
 AUTH_USER_MODEL = 'companies.User'
 
+RELATIVE_PATH = ''
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-sys.path.insert(0, os.path.join(BASE_DIR, 'apps'))
+sys.path.insert(0, os.path.join(BASE_DIR, RELATIVE_PATH, 'apps'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -53,6 +55,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'webpack_loader',
     'easy_thumbnails',
+    'transliterate',
 
     # project apps
     'companies',
@@ -75,7 +78,7 @@ ROOT_URLCONF = 'config.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '', 'templates')],
+        'DIRS': [os.path.join(BASE_DIR, RELATIVE_PATH, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -168,17 +171,17 @@ LOGOUT_REDIRECT_URL = LOGIN_FORM_URL
 LOGIN_REDIRECT_URL = LOGIN_FORM_URL
 LOGIN_URL = LOGIN_FORM_URL
 
-STATIC_ROOT = os.path.join(BASE_DIR, '', 'static/')
+STATIC_ROOT = os.path.join(BASE_DIR, RELATIVE_PATH, 'static/')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, '', 'ui/build/'),
+    os.path.join(BASE_DIR, RELATIVE_PATH, 'ui/build/'),
 )
 
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
         'BUNDLE_DIR_NAME': '/',
-        'STATS_FILE': os.path.join(BASE_DIR, 'ui/webpack-stats.json'),
+        'STATS_FILE': os.path.join(BASE_DIR, RELATIVE_PATH, 'ui/webpack-stats.json'),
         'POLL_INTERVAL': 0.1,
         'TIMEOUT': None,
         'IGNORE': [r'.+\.hot-update.js', r'.+\.map'],
@@ -186,5 +189,5 @@ WEBPACK_LOADER = {
     },
 }
 
-MEDIA_ROOT = os.path.join(BASE_DIR, '', 'files/')
+MEDIA_ROOT = os.path.join(BASE_DIR, '..', 'files/')
 MEDIA_URL = '/files/'
