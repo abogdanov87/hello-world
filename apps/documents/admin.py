@@ -4,14 +4,10 @@ from django.contrib import admin
 from .models import (
     Document,
     DocumentTemplate,
-    DocumentTemplateParam,
 )
-
-
-class DocumentTemplateParamInline(admin.TabularInline):
-    model = DocumentTemplateParam
-    fields = ('code', 'name', 'value_type', 'value', 'active')
-    extra = 0
+from common.admin import (
+    ParamInline,
+)
 
 
 @admin.register(DocumentTemplate)
@@ -20,12 +16,10 @@ class DocumentTemplateAdmin(admin.ModelAdmin):
     fields = [
         'name',
         'file_template',
-        'params',
         'company',
         'template',
         'active',
     ]
-    inlines=[DocumentTemplateParamInline,]
     list_display = ('name',)
     list_display_links = ('name',)
 

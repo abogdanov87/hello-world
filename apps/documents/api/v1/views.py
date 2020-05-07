@@ -22,15 +22,19 @@ from companies.api.v1.serializers import (
 from documents.models import (
     DocumentTemplate,
     Document,
-    DocumentTemplateParam,
 )
 from .serializers import (
     DocumentTemplateSerializer,
-    DocumentTemplateParamSerializer,
     DocumentSerializer,
 )
 from .filters import (
     DocumentTemplateFilter,
+)
+from common.models import (
+    Param,
+)
+from common.api.v1.serializers import (
+    ParamSerializer,
 )
 
 
@@ -115,56 +119,34 @@ class DocumentTemplateListCreateAPIView(generics.ListCreateAPIView):
 
     def post(self, request, format=None):
         try:
-            active = str(request.data.get('active', True)).lower() == 'true'
             template = request.FILES.get('file', None)
             is_new = True if request.data.get('id', None) is None else False
             if is_new:
-                if template is None:
-                    instance = DocumentTemplate(
-                        id=request.data.get('id', None),
-                        name=request.data.get('file_name', request.data['name']),
-                        company=Company.objects.get(pk=request.data['company']),
-                        params=request.data.get('params', None),
-                        active=active,
-                        template=False,
-                    )
-                else :
-                    instance = DocumentTemplate(
-                        id=request.data.get('id', None),
-                        name=request.data.get('file_name', request.data['name']),
-                        file_template=template,
-                        company=Company.objects.get(pk=request.data['company']),
-                        params=request.data.get('params', None),
-                        active=active,
-                        template=False,
-                    )
+                instance = DocumentTemplate()
             else:
                 instance = DocumentTemplate.objects.get(pk=request.data.get('id', None))
-                instance.name = request.data.get('file_name', request.data['name'])
-                instance.params = request.data.get('params', None)
-                instance.active = active
-                if not template is None: 
-                    instance.file_template = template
+            instance.name = request.data.get('file_name', request.data['name'])
+            instance.company = Company.objects.get(pk=request.data['company'])
+            instance.active = str(request.data.get('active', True)).lower() == 'true'
+            instance.template = False
+            if not template is None:
+                instance.file_template = template
             instance.save()
-            document_template_params = json.loads(request.data.get('document_template_params', None))
-            if not document_template_params is None and instance:
-                for dtp in document_template_params:
+            params = json.loads(request.data.get('params', None))
+            if not params is None and instance:
+                for dtp in params:
                     dtp.update({
                         'code': translit(dtp['name'], 'ru', reversed=True).lower().replace(' ', '_').replace('%', 'percent'),
                         'value': '' if str(dtp['value']) == 'None' else str(dtp['value']),
-                        'document_template': instance.id
+                        'entity_id': instance.id
                     })
                     if not dtp.get('id', None) is None and dtp.get('id', None) > 0:
-                        dtp_instance = DocumentTemplateParam.objects.get(pk=dtp['id'])
-                        dtp_serializer = DocumentTemplateParamSerializer(dtp_instance, data=dtp)
+                        dtp_instance = Param.objects.get(pk=dtp['id'])
+                        dtp_serializer = ParamSerializer(dtp_instance, data=dtp)
                     else:
-                        dtp_serializer = DocumentTemplateParamSerializer(data=dtp)
+                        dtp_serializer = ParamSerializer(data=dtp)
                     if dtp_serializer.is_valid():
                         dtp_serializer.save()
-            if not request.data.get('commission', None) is None and instance:
-                commission = Commission.objects.get(pk=request.data['commission'])
-                commission.document_template = instance
-                commission.save()
             return Response(DocumentTemplateSerializer(instance).data, status.HTTP_201_CREATED)
         except Exception as e:
             return Response({'error': str(e)}, status.HTTP_400_BAD_REQUEST)
