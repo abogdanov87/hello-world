@@ -60,6 +60,7 @@ INSTALLED_APPS = [
     # project apps
     'companies',
     'documents',
+    'common',
 ]
 
 MIDDLEWARE = [

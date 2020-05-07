@@ -1,4 +1,5 @@
 from rest_framework import serializers
+# from drf_writable_nested import WritableNestedModelSerializer
 from apps.documents.api.v1.serializers import (
     DocumentTemplateSerializer,
 )
@@ -16,6 +17,12 @@ from companies.models import (
     Commission,
     Event,
     EventEmployee,
+)
+from documents.models import (
+    DocumentTemplate,   
+)
+from common.api.v1.serializers import (
+    ParamSerializer,
 )
 
 
@@ -245,16 +252,8 @@ class CommissionSerializer(serializers.ModelSerializer):
             'decree',
             'decree_date',
             'company',
-            'document_template',
             'active',
         )
-
-    def to_representation(self, instance):
-        response = super().to_representation(instance)
-        response['document_template'] = DocumentTemplateSerializer(
-            instance.document_template,
-        ).data
-        return response
 
     def validate(self, data):
         return data
@@ -286,6 +285,14 @@ class CommissionEmployeeSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
+    # params = ParamSerializer(many=True)
+    document_template = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=DocumentTemplate.objects.all(),
+        required=False,
+        allow_empty=True,
+    )
+
     class Meta:
         model = Event
         fields = (
@@ -296,6 +303,9 @@ class EventSerializer(serializers.ModelSerializer):
             'frequency',
             'company',
             'commission',
+            # 'params',
+            'document_template',
+            'previous',
             'active',
         )
 
@@ -305,6 +315,16 @@ class EventSerializer(serializers.ModelSerializer):
             instance.employee, many=True
         ).data
         return response
+
+    def update(self, instance, validated_data):
+        if validated_data.get('document_template'):
+            document_templates = validated_data.pop('document_template')
+            instance.document_template.clear()
+            for document_template in document_templates:
+                instance.document_template.add(document_template)
+
+        instance = super().update(instance, validated_data)
+        return instance
 
     def validate(self, data):
         return data

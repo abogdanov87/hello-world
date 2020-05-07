@@ -1,9 +1,12 @@
+import os
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import datetime
 from django.utils import timezone
 from django.conf import settings
 from easy_thumbnails.fields import ThumbnailerImageField
+from django.apps import apps
+from common.models import Entity
 
 from django.utils.translation import gettext_lazy as _
 
@@ -923,7 +926,7 @@ class CommissionEmployee(models.Model):
         return '{} - {}'.format(self.commission.name, self.employee.last_name)
 
 
-class Event(models.Model):
+class Event(Entity):
     """
         Мероприятие
     """
@@ -983,6 +986,18 @@ class Event(models.Model):
         blank=True, null=True,
         verbose_name=_('Комиссия'),
     )
+    document_template = models.ManyToManyField(
+        'documents.DocumentTemplate',
+        verbose_name=_('Документ'),
+        through='EventDocumentTemplate',
+        through_fields=['event', 'document_template',],    
+    )
+    previous = models.ForeignKey(
+        'self',
+        on_delete=models.PROTECT,
+        blank=True, null=True,
+        verbose_name=_('Предыдущее'),
+    )
     active = models.BooleanField(
         _('Статус активности'),
         blank=False, null=False,
@@ -1000,11 +1015,11 @@ class Event(models.Model):
 
 class EventEmployee(models.Model):
     """
-        Комиссия - Сотрудник
+        Мероприятие - Сотрудник
     """
     event = models.ForeignKey(
         'Event',
-        to_field='id',
+        to_field='entity_ptr',
         on_delete=models.PROTECT,
         verbose_name=_('Мероприятие'),
         blank=False, null=False,
@@ -1040,3 +1055,50 @@ class EventEmployee(models.Model):
 
     def __str__(self):
         return '{} - {}'.format(self.event.name, self.employee.last_name)
+
+
+class EventDocumentTemplate(models.Model):
+    """
+        Мероприятие - Документ
+    """
+    APPLY_TO = (
+        ('event', 'Мероприятие'),
+        ('commission', 'Комиссия'),
+        ('employee', 'Участник'),
+    )
+    event = models.ForeignKey(
+        'Event',
+        to_field='entity_ptr',
+        on_delete=models.PROTECT,
+        verbose_name=_('Мероприятие'),
+        blank=False, null=False,
+        db_column='event_id',
+    )
+    document_template = models.ForeignKey(
+        'documents.DocumentTemplate',
+        to_field='entity_ptr',
+        on_delete=models.PROTECT,
+        verbose_name=_('Документ'),
+        blank=False, null=False,
+        db_column='document_template_id',
+    )
+    apply_to = models.CharField(
+        _('Применить'),
+        max_length=20,
+        choices=APPLY_TO,
+        blank=False, null=False,
+        default='event',
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'event_document_template'
+        verbose_name = _('Мероприятие - Документ')
+        verbose_name_plural = _('Мероприятия - Документы')
+
+    def __str__(self):
+        return '{} - {}'.format(self.event.name, self.document_template.name)
