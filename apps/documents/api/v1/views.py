@@ -42,6 +42,7 @@ from common.api.v1.serializers import (
 
 def getContext(request, company_id):
     data = {}
+    variables = []
     try:
         # Company
         json_data = json.loads(serializers.serialize('json', Company.objects.filter(pk=company_id)))[0]
@@ -50,6 +51,7 @@ def getContext(request, company_id):
         for key in model_fields:
             new_key = model_name + '_' + key
             data[new_key] = model_fields[key]
+            variables.append(new_key)
         # DocumentTemplate
         json_data = json.loads(serializers.serialize('json', DocumentTemplate.objects.filter(pk=request.data['document_template'])))[0]
         model_name = json_data['model'].split('.')[1]
@@ -57,6 +59,7 @@ def getContext(request, company_id):
         for key in model_fields:
             new_key = model_name + '_' + key
             data[new_key] = model_fields[key]
+            variables.append(new_key)
         # Event
         if request.data['entity_name'] == 'event':
             json_data = json.loads(serializers.serialize('json', Event.objects.filter(pk=request.data['entity_id'])))[0]
@@ -65,7 +68,9 @@ def getContext(request, company_id):
             for key in model_fields:
                 new_key = model_name + '_' + key
                 data[new_key] = model_fields[key]
+                variables.append(new_key)
 
+        data['variables'] = variables
         return data
     except Exception as e:
         return {'error': 'error'}
@@ -130,6 +135,7 @@ class DocumentCreateAPIView(generics.ListCreateAPIView):
         doc.render(context)
         file_name = '{}-{}.docx'.format(resp.data['document_template']['name'], new_id)
         doc.save(os.path.join(settings.MEDIA_ROOT, 'doc_generated', file_name))
+        resp.data.update({'context': context})
         return Response(resp.data, status.HTTP_201_CREATED)
 
 
