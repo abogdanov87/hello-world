@@ -55,21 +55,19 @@ class CompanyListCreateAPIView(generics.ListCreateAPIView):
     def get_queryset(self):
         return Company.objects.filter(user=self.request.user.id)
 
-    def create(self, request, *args, **kwargs):
-        if request.user:
-            request.data.update({
-                'user': request.user.id,
-                'active': True,
-            })
-        serializer = self.get_serializer(
-            data=request.data, many=isinstance(request.data, list),
+    def post(self, request, format=None):
+        company_instance = Company(
+            name=request.data['name'],
+            short_name=request.data['short_name'],
+            inn=request.data['inn'],
+            active=True,
         )
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        headers = self.get_success_headers(serializer.data)
-        return Response(
-            serializer.data, status=status.HTTP_201_CREATED, headers=headers,
-        )
+        badge = request.FILES.get('badge', None)
+        if not badge is None:
+            company_instance.badge = badge
+        company_instance.save()
+        company_instance.user.add(request.user)
+        return Response({'response': 'CREATED'}, status.HTTP_201_CREATED)
 
 
 class CompanyRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
