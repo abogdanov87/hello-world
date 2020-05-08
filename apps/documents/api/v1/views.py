@@ -138,7 +138,7 @@ class DocumentTemplateListCreateAPIView(generics.ListCreateAPIView):
                     dtp.update({
                         'code': translit(dtp['name'], 'ru', reversed=True).lower().replace(' ', '_').replace('%', 'percent'),
                         'value': '' if str(dtp['value']) == 'None' else str(dtp['value']),
-                        'entity_id': instance.id
+                        'entity': instance.id
                     })
                     if not dtp.get('id', None) is None and dtp.get('id', None) > 0:
                         dtp_instance = Param.objects.get(pk=dtp['id'])
