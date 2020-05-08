@@ -990,7 +990,7 @@ class Event(Entity):
         'documents.DocumentTemplate',
         verbose_name=_('Документ'),
         through='EventDocumentTemplate',
-        through_fields=['event', 'document_template',],    
+        through_fields=['event', 'document_template',],
     )
     previous = models.ForeignKey(
         'self',
@@ -1073,6 +1073,7 @@ class EventDocumentTemplate(models.Model):
         verbose_name=_('Мероприятие'),
         blank=False, null=False,
         db_column='event_id',
+        related_name='event_to_doc_template',
     )
     document_template = models.ForeignKey(
         'documents.DocumentTemplate',
