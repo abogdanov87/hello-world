@@ -6,6 +6,7 @@ from django.http import HttpResponse, Http404, JsonResponse
 from django.db.models import Max
 from docxtpl import DocxTemplate
 from django.conf import settings
+from django.core import serializers
 import uuid
 import random
 import json
@@ -14,6 +15,7 @@ from transliterate import translit, get_available_language_codes
 from companies.models import (
     Company,
     Commission,
+    Event,
 )
 from companies.api.v1.serializers import (
     CompanySerializer,
@@ -39,13 +41,32 @@ from common.api.v1.serializers import (
 
 
 def getContext(request, company_id):
-    company = Company.objects.get(pk=company_id)
+    data = {}
     try:
-        response_data = {
-            'company_name': company.name,
-            'company_inn': company.inn,
-        }
-        return response_data
+        # Company
+        json_data = json.loads(serializers.serialize('json', Company.objects.filter(pk=company_id)))[0]
+        model_name = json_data['model'].split('.')[1]
+        model_fields = json_data['fields']
+        for key in model_fields:
+            new_key = model_name + '_' + key
+            data[new_key] = model_fields[key]
+        # DocumentTemplate
+        json_data = json.loads(serializers.serialize('json', DocumentTemplate.objects.filter(pk=request.data['document_template'])))[0]
+        model_name = json_data['model'].split('.')[1]
+        model_fields = json_data['fields']
+        for key in model_fields:
+            new_key = model_name + '_' + key
+            data[new_key] = model_fields[key]
+        # Event
+        if request.data['entity_name'] == 'event':
+            json_data = json.loads(serializers.serialize('json', Event.objects.filter(pk=request.data['entity_id'])))[0]
+            model_name = json_data['model'].split('.')[1]
+            model_fields = json_data['fields']
+            for key in model_fields:
+                new_key = model_name + '_' + key
+                data[new_key] = model_fields[key]
+
+        return data
     except Exception as e:
         return {'error': 'error'}
 
@@ -138,7 +159,7 @@ class DocumentTemplateListCreateAPIView(generics.ListCreateAPIView):
                     dtp.update({
                         'code': translit(dtp['name'], 'ru', reversed=True).lower().replace(' ', '_').replace('%', 'percent'),
                         'value': '' if str(dtp['value']) == 'None' else str(dtp['value']),
-                        'entity_id': instance.id
+                        'entity': instance.id
                     })
                     if not dtp.get('id', None) is None and dtp.get('id', None) > 0:
                         dtp_instance = Param.objects.get(pk=dtp['id'])
