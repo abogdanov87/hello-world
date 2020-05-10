@@ -67,7 +67,7 @@ class CompanyListCreateAPIView(generics.ListCreateAPIView):
             company_instance.badge = badge
         company_instance.save()
         company_instance.user.add(request.user)
-        return Response({'response': 'CREATED'}, status.HTTP_201_CREATED)
+        return Response(CompanySerializer(company_instance).data, status.HTTP_201_CREATED)
 
 
 class CompanyRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):

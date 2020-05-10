@@ -887,7 +887,7 @@ class CommissionEmployee(models.Model):
     MEMBER_STATUSES = (
         (1, 'Председатель'),
         (2, 'Секретарь'),
-        (3, 'Участник'),
+        (3, 'Член'),
     )
     commission = models.ForeignKey(
         'Commission',

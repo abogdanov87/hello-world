@@ -15,8 +15,8 @@ class Param(models.Model):
         Дополнительный параметр
     """
     VALUE_TYPES = (
-        ('number', 'Число'),
         ('text', 'Строка'),
+        ('number', 'Число'),
         ('date', 'Дата'),
         ('boolean', 'Булево'),
     )
@@ -38,7 +38,7 @@ class Param(models.Model):
         max_length=10,
         choices=VALUE_TYPES,
         blank=False, null=False,
-        default='number',
+        default='text',
     )
     value = models.CharField(
         _('Значение'),

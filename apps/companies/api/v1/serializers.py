@@ -298,12 +298,6 @@ class EventDocumentTemplateSerializer(serializers.ModelSerializer):
 
 
 class EventSerializer(serializers.ModelSerializer):
-    # params = ParamSerializer(many=True)
-    document_template = EventDocumentTemplateSerializer(
-        source='event_to_doc_template',
-        many=True
-    )
-
     class Meta:
         model = Event
         fields = (
@@ -314,78 +308,13 @@ class EventSerializer(serializers.ModelSerializer):
             'frequency',
             'company',
             'commission',
-            # 'params',
-            'document_template',
             'previous',
             'active',
         )
 
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['employee'] = EmployeeSerializer(
-            instance.employee, many=True
-        ).data
-        q = EventDocumentTemplate.objects.filter(event=instance.pk)
-        response['document_template'] = EventDocumentTemplateSerializer(
-            q, many=True
-        ).data
         return response
-
-    def create(self, validated_data):
-        document_template_data = validated_data.pop('event_to_doc_template')
-        instance = Event(
-            event_type=validated_data.get('event_type', None),
-            name=validated_data.get('name', None),
-            event_date=validated_data.get('event_date', None),
-            frequency=validated_data.get('frequency', None),
-            company=validated_data.get('company', None),
-            commission=validated_data.get('commission', None),
-            previous=validated_data.get('previous', None),
-            active=validated_data.get('active', None),
-        )
-        instance.save()
-        for dtd in document_template_data:
-            dt_instance = EventDocumentTemplate()
-            dt_instance.event = instance
-            dt_instance.document_template = dtd.get('document_template', None)
-            dt_instance.apply_to = dtd.get('apply_to', None)
-            dt_instance.active = dtd.get('active', None)
-            dt_instance.save()
-
-        return instance
-
-    def update(self, instance, validated_data):
-        document_template_data = validated_data.pop('event_to_doc_template')
-        document_template = instance.event_to_doc_template
-
-        instance.event_type = validated_data.get('event_type', instance.event_type)
-        instance.name = validated_data.get('name', instance.name)
-        instance.event_date = validated_data.get('event_date', instance.event_date)
-        instance.frequency = validated_data.get('frequency', instance.frequency)
-        instance.company = validated_data.get('company', instance.company)
-        instance.commission = validated_data.get('commission', instance.commission)
-        instance.previous = validated_data.get('previous', instance.previous)
-        instance.active = validated_data.get('active', instance.active)
-        instance.save()
-
-        for dtd in document_template_data:
-            if EventDocumentTemplate.objects.filter(
-                event=instance.id,
-                document_template=dtd.get('document_template', None).id,
-            ).exists():
-                dt_instance = EventDocumentTemplate.objects.filter(
-                    event=instance.id,
-                    document_template=dtd.get('document_template', None).id,
-                ).first()
-            else:
-                dt_instance = EventDocumentTemplate()
-            dt_instance.event = instance
-            dt_instance.document_template = dtd.get('document_template', None)
-            dt_instance.apply_to = dtd.get('apply_to', None)
-            dt_instance.active = dtd.get('active', None)
-            dt_instance.save()
-
-        return instance
 
     def validate(self, data):
         return data
