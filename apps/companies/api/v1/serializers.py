@@ -1,5 +1,5 @@
 from rest_framework import serializers
-# from drf_writable_nested import WritableNestedModelSerializer
+from rest_framework_bulk import BulkListSerializer, BulkSerializerMixin
 from apps.documents.api.v1.serializers import (
     DocumentTemplateSerializer,
 )
@@ -285,12 +285,13 @@ class CommissionEmployeeSerializer(serializers.ModelSerializer):
         return data
 
 
-class EventDocumentTemplateSerializer(serializers.ModelSerializer):
+class EventDocumentTemplateSerializer(BulkSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = EventDocumentTemplate
+        list_serializer_class = BulkListSerializer
         fields = (
             'id',
-            # 'event',
+            'event',
             'document_template',
             'apply_to',
             'active',
@@ -320,12 +321,13 @@ class EventSerializer(serializers.ModelSerializer):
         return data
 
 
-class EventEmployeeSerializer(serializers.ModelSerializer):
+class EventEmployeeSerializer(BulkSerializerMixin, serializers.ModelSerializer):
     class Meta:
         model = EventEmployee
+        list_serializer_class = BulkListSerializer
         fields = (
             'id',
-            'event',
+            'event_instance',
             'employee',
             'event_date',
             'certificate',
@@ -334,8 +336,8 @@ class EventEmployeeSerializer(serializers.ModelSerializer):
     
     def to_representation(self, instance):
         response = super().to_representation(instance)
-        response['event'] = EventSerializer(
-            instance.event,
+        response['event_instance'] = EventSerializer(
+            instance.event_instance,
         ).data
         response['employee'] = EmployeeSerializer(
             instance.employee,
