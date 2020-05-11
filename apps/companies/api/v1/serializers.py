@@ -228,15 +228,15 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'company',
         )
 
-    def update(self, instance, validated_data):
-        if validated_data.get('workplace'):
-            workplaces = validated_data.pop('workplace')
-            instance.workplace.clear()
-            for workplace in workplaces:
-                instance.workplace.add(workplace)
+    # def update(self, instance, validated_data):
+    #     if validated_data.get('workplace'):
+    #         workplaces = validated_data.pop('workplace')
+    #         instance.workplace.clear()
+    #         for workplace in workplaces:
+    #             instance.workplace.add(workplace)
 
-        instance = super().update(instance, validated_data)
-        return instance
+    #     instance = super().update(instance, validated_data)
+    #     return instance
 
     def validate(self, data):
         return data
