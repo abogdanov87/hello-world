@@ -9,6 +9,7 @@ from companies.models import (
     Commission,
     Event,
     DepartmentType,
+    EventEmployee,
 )
 
 
@@ -64,3 +65,9 @@ class EventFilter(filters.FilterSet):
     class Meta:
         model = Event
         fields = ('company',)
+
+
+class EventEmployeeFilter(filters.FilterSet):
+    class Meta:
+        model = EventEmployee
+        fields = ('event_instance',)

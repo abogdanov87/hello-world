@@ -144,40 +144,6 @@ class DocumentTemplateListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = DocumentTemplateSerializer
     filterset_class = DocumentTemplateFilter
 
-    def post(self, request, format=None):
-        try:
-            template = request.FILES.get('file', None)
-            is_new = True if request.data.get('id', None) is None else False
-            if is_new:
-                instance = DocumentTemplate()
-            else:
-                instance = DocumentTemplate.objects.get(pk=request.data.get('id', None))
-            instance.name = request.data.get('file_name', request.data['name'])
-            instance.company = Company.objects.get(pk=request.data['company'])
-            instance.active = str(request.data.get('active', True)).lower() == 'true'
-            instance.template = False
-            if not template is None:
-                instance.file_template = template
-            instance.save()
-            params = json.loads(request.data.get('params', None))
-            if not params is None and instance:
-                for dtp in params:
-                    dtp.update({
-                        'code': translit(dtp['name'], 'ru', reversed=True).lower().replace(' ', '_').replace('%', 'percent'),
-                        'value': '' if str(dtp['value']) == 'None' else str(dtp['value']),
-                        'entity': instance.id
-                    })
-                    if not dtp.get('id', None) is None and dtp.get('id', None) > 0:
-                        dtp_instance = Param.objects.get(pk=dtp['id'])
-                        dtp_serializer = ParamSerializer(dtp_instance, data=dtp)
-                    else:
-                        dtp_serializer = ParamSerializer(data=dtp)
-                    if dtp_serializer.is_valid():
-                        dtp_serializer.save()
-            return Response(DocumentTemplateSerializer(instance).data, status.HTTP_201_CREATED)
-        except Exception as e:
-            return Response({'error': str(e)}, status.HTTP_400_BAD_REQUEST)
-
 
 class DocumentTemplateRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     queryset = DocumentTemplate.objects.all()

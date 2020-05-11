@@ -887,7 +887,7 @@ class CommissionEmployee(models.Model):
     MEMBER_STATUSES = (
         (1, 'Председатель'),
         (2, 'Секретарь'),
-        (3, 'Участник'),
+        (3, 'Член'),
     )
     commission = models.ForeignKey(
         'Commission',
@@ -974,23 +974,11 @@ class Event(Entity):
         blank=False, null=False,
         verbose_name=_('Компания'),
     )
-    employee = models.ManyToManyField(
-        Employee,
-        verbose_name=_('Сотрудник'),
-        through='EventEmployee',
-        through_fields=['event', 'employee',],    
-    )
     commission = models.ForeignKey(
         Commission,
         on_delete=models.PROTECT,
         blank=True, null=True,
         verbose_name=_('Комиссия'),
-    )
-    document_template = models.ManyToManyField(
-        'documents.DocumentTemplate',
-        verbose_name=_('Документ'),
-        through='EventDocumentTemplate',
-        through_fields=['event', 'document_template',],
     )
     previous = models.ForeignKey(
         'self',
@@ -1013,12 +1001,12 @@ class Event(Entity):
         return self.name
 
 
-class EventEmployee(models.Model):
+class EventEmployee(Entity):
     """
         Мероприятие - Сотрудник
     """
-    event = models.ForeignKey(
-        'Event',
+    event_instance = models.ForeignKey(
+        Event,
         to_field='entity_ptr',
         on_delete=models.PROTECT,
         verbose_name=_('Мероприятие'),
@@ -1026,7 +1014,7 @@ class EventEmployee(models.Model):
         db_column='event_id',
     )
     employee = models.ForeignKey(
-        'Employee',
+        Employee,
         to_field='id',
         on_delete=models.PROTECT,
         verbose_name=_('Сотрудник'),
@@ -1067,7 +1055,7 @@ class EventDocumentTemplate(models.Model):
         ('employee', 'Участник'),
     )
     event = models.ForeignKey(
-        'Event',
+        Event,
         to_field='entity_ptr',
         on_delete=models.PROTECT,
         verbose_name=_('Мероприятие'),

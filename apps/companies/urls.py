@@ -122,8 +122,13 @@ urlpatterns = [
         name='list',
     ),
     url(
-        r'^api/v1/events-employees/(?P<pk>\d+)/$',
-        api_v1_views.EventEmployeeRetrieveUpdateAPIView.as_view(),
+        r'^api/v1/events-document-templates/$',
+        api_v1_views.EventDocumentTemplateListCreateAPIView.as_view(),
+        name='list',
+    ),
+    url(
+        r'^api/v1/events-document-templates/(?P<pk>\d+)/$',
+        api_v1_views.EventDocumentTemplateRetrieveUpdateAPIView.as_view(),
         name='detail',
     ),
 ]

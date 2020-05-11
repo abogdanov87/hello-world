@@ -9,8 +9,6 @@ from common.api.v1.serializers import (
 
 
 class DocumentTemplateSerializer(serializers.ModelSerializer):
-    params = ParamSerializer(many=True)
-
     class Meta:
         model = DocumentTemplate
         fields = (
@@ -18,7 +16,6 @@ class DocumentTemplateSerializer(serializers.ModelSerializer):
             'name',
             'file_template',
             'get_file_template_name',
-            'params',
             'company',
             'template',
             'active',

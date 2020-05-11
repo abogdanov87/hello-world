@@ -1,4 +1,5 @@
 from rest_framework import generics, permissions, status
+from rest_framework_bulk import ListBulkCreateUpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from PIL import Image
@@ -19,6 +20,7 @@ from companies.models import (
     Commission,
     Event,
     EventEmployee,
+    EventDocumentTemplate,
 )
 from .serializers import (
     CompanySerializer, 
@@ -33,6 +35,7 @@ from .serializers import (
     CommissionSerializer,
     EventSerializer,
     EventEmployeeSerializer,
+    EventDocumentTemplateSerializer,
 )
 from .filters import (
     CompanyFilter, 
@@ -44,6 +47,7 @@ from .filters import (
     CommissionFilter,
     EventFilter,
     DepartmentTypeFilter,
+    EventEmployeeFilter,
 )
 
 
@@ -67,7 +71,7 @@ class CompanyListCreateAPIView(generics.ListCreateAPIView):
             company_instance.badge = badge
         company_instance.save()
         company_instance.user.add(request.user)
-        return Response({'response': 'CREATED'}, status.HTTP_201_CREATED)
+        return Response(CompanySerializer(company_instance).data, status.HTTP_201_CREATED)
 
 
 class CompanyRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
@@ -208,24 +212,37 @@ class EventRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
     serializer_class = EventSerializer
 
 
-class EventEmployeeListCreateAPIView(generics.ListCreateAPIView):
+class EventEmployeeListCreateAPIView(ListBulkCreateUpdateAPIView):
     queryset = EventEmployee.objects.all()
     serializer_class = EventEmployeeSerializer
+    filterset_class = EventEmployeeFilter
     
     def get_queryset(self):
         queryset = EventEmployee.objects.all()
+        company = self.request.query_params.get('company', None)
+        if company is not None:
+            queryset = queryset.filter(event_instance__company=company)
+        return queryset
+
+
+class EventDocumentTemplateListCreateAPIView(ListBulkCreateUpdateAPIView):
+    queryset = EventDocumentTemplate.objects.all()
+    serializer_class = EventDocumentTemplateSerializer
+    
+    def get_queryset(self):
+        queryset = EventDocumentTemplate.objects.all()
         company = self.request.query_params.get('company', None)
         if company is not None:
             queryset = queryset.filter(event__company=company)
         return queryset
 
 
-class EventEmployeeRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
-    queryset = EventEmployee.objects.all()
-    serializer_class = EventEmployeeSerializer
-    
+class EventDocumentTemplateRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
+    queryset = EventDocumentTemplate.objects.all()
+    serializer_class = EventDocumentTemplateSerializer
+
     def get_queryset(self):
-        queryset = EventEmployee.objects.all()
+        queryset = EventDocumentTemplate.objects.all()
         company = self.request.query_params.get('company', None)
         if company is not None:
             queryset = queryset.filter(event__company=company)
