@@ -7,6 +7,7 @@ from django.conf import settings
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.apps import apps
 from common.models import Entity
+from simple_history.models import HistoricalRecords
 
 from django.utils.translation import gettext_lazy as _
 
@@ -90,6 +91,7 @@ class Company(models.Model):
         blank=False, null=False,
         default=True,
     )
+    history = HistoricalRecords()
 
     class Meta:
         db_table = 'company'
