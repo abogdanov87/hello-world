@@ -145,8 +145,7 @@ class Department(models.Model):
     code = models.CharField(
         _('Код подразделения'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Название'),
@@ -199,8 +198,7 @@ class Position(models.Model):
     code = models.CharField(
         _('Код должности'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Название'),
@@ -263,8 +261,7 @@ class Equipment(models.Model):
     code = models.CharField(
         _('Код инструмента'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Название'),
@@ -312,8 +309,7 @@ class Workplace(models.Model):
     code = models.CharField(
         _('Код рабочего места'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     position = models.ForeignKey(
         Position,
@@ -510,8 +506,7 @@ class HarmfulFactor(models.Model):
     code = models.CharField(
         _('Номер'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Наименование'),
@@ -537,8 +532,7 @@ class WorkType(models.Model):
     code = models.CharField(
         _('Номер'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Наименование'),
