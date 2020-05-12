@@ -410,8 +410,7 @@ class Employee(models.Model):
     pers_number = models.CharField(
         _('Табельный номер'),
         max_length=255,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     avatar = ThumbnailerImageField(
         _('Аватарка'),
@@ -422,8 +421,7 @@ class Employee(models.Model):
     insurance_number = models.CharField(
         _('Страховой номер (СНИЛС)'),
         max_length=255,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     workplace = models.ManyToManyField(
         Workplace,
