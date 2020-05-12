@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     'easy_thumbnails',
     'transliterate',
+    'simple_history',
 
     # project apps
     'companies',
@@ -72,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'

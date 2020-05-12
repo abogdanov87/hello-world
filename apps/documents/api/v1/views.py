@@ -2,6 +2,7 @@ import os
 from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from django.http import HttpResponse, Http404, JsonResponse
 from django.db.models import Max
 from docxtpl import DocxTemplate
@@ -38,6 +39,10 @@ from common.models import (
 from common.api.v1.serializers import (
     ParamSerializer,
 )
+
+
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size_query_param = 'size'
 
 
 def getContext(request, company_id):
@@ -119,7 +124,7 @@ class DocumentCreateAPIView(generics.ListCreateAPIView):
     serializer_class = DocumentSerializer
 
     def get(self, request, format=None):
-        queryset = Document.objects.filter(user=request.user.id)
+        queryset = Document.objects.filter(user=request.user.id).order_by('-created')[:11]
         serializer = DocumentSerializer(queryset, many=True)
         return Response(serializer.data)
 
@@ -143,6 +148,7 @@ class DocumentTemplateListCreateAPIView(generics.ListCreateAPIView):
     queryset = DocumentTemplate.objects.all()
     serializer_class = DocumentTemplateSerializer
     filterset_class = DocumentTemplateFilter
+    pagination_class = CustomPageNumberPagination
 
 
 class DocumentTemplateRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):

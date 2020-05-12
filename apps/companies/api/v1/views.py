@@ -1,6 +1,7 @@
 from rest_framework import generics, permissions, status
 from rest_framework_bulk import ListBulkCreateUpdateAPIView
 from rest_framework.views import APIView
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from PIL import Image
 import glob, os
@@ -49,6 +50,10 @@ from .filters import (
     DepartmentTypeFilter,
     EventEmployeeFilter,
 )
+
+
+class CustomPageNumberPagination(PageNumberPagination):
+    page_size_query_param = 'size'
 
 
 class CompanyListCreateAPIView(generics.ListCreateAPIView):
@@ -202,9 +207,10 @@ class CommissionRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
 
 
 class EventListCreateAPIView(generics.ListCreateAPIView):
-    queryset = Event.objects.all()
+    queryset = Event.objects.all().order_by('-event_date')
     serializer_class = EventSerializer
     filterset_class = EventFilter
+    pagination_class = CustomPageNumberPagination
 
 
 class EventRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView):
