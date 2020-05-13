@@ -1,4 +1,4 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status, filters
 from rest_framework_bulk import ListBulkCreateUpdateAPIView
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from PIL import Image
 import glob, os
 from django.conf import settings
+from django.db.models import Q, CharField
 
 
 from companies.models import (
@@ -22,6 +23,7 @@ from companies.models import (
     Event,
     EventEmployee,
     EventDocumentTemplate,
+    EventType,
 )
 from .serializers import (
     CompanySerializer, 
@@ -37,6 +39,7 @@ from .serializers import (
     EventSerializer,
     EventEmployeeSerializer,
     EventDocumentTemplateSerializer,
+    EventTypeSerializer,
 )
 from .filters import (
     CompanyFilter, 
@@ -49,6 +52,7 @@ from .filters import (
     EventFilter,
     DepartmentTypeFilter,
     EventEmployeeFilter,
+    EventTypeFilter,
 )
 
 
@@ -253,3 +257,9 @@ class EventDocumentTemplateRetrieveUpdateAPIView(generics.RetrieveUpdateAPIView)
         if company is not None:
             queryset = queryset.filter(event__company=company)
         return queryset
+
+
+class EventTypeListCreateAPIView(ListBulkCreateUpdateAPIView):
+    queryset = EventType.objects.all()
+    serializer_class = EventTypeSerializer
+    filterset_class = EventTypeFilter

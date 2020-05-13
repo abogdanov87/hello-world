@@ -131,4 +131,9 @@ urlpatterns = [
         api_v1_views.EventDocumentTemplateRetrieveUpdateAPIView.as_view(),
         name='detail',
     ),
+    url(
+        r'^api/v1/event-types/$',
+        api_v1_views.EventTypeListCreateAPIView.as_view(),
+        name='bulk_list_create_update',
+    ),
 ]

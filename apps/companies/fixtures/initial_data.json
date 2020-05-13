@@ -1,0 +1,34 @@
+[
+  {
+    "model": "companies.eventtype",
+    "pk": 1,
+    "fields": {
+      "name": "Обучение и проверка знаний",
+      "company": null
+    }
+  },
+  {
+    "model": "companies.eventtype",
+    "pk": 2,
+    "fields": {
+      "name": "Проведение СОУТ",
+      "company": null
+    }
+  },
+  {
+    "model": "companies.eventtype",
+    "pk": 3,
+    "fields": {
+      "name": "Расследование НС",
+      "company": null
+    }
+  },
+  {
+    "model": "companies.eventtype",
+    "pk": 4,
+    "fields": {
+      "name": "Комиссия по СИЗ",
+      "company": null
+    }
+  }
+]
