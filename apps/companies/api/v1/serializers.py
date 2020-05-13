@@ -18,6 +18,7 @@ from companies.models import (
     Event,
     EventEmployee,
     EventDocumentTemplate,
+    EventType,
 )
 from documents.models import (
     DocumentTemplate,   
@@ -67,6 +68,21 @@ class DepartmentTypeSerializer(serializers.ModelSerializer):
             'id',
             'name',
             'order_num',
+            'company',
+            'active',
+        )
+
+    def validate(self, data):
+        return data
+
+
+class EventTypeSerializer(BulkSerializerMixin, serializers.ModelSerializer):
+    class Meta:
+        model = EventType
+        list_serializer_class = BulkListSerializer
+        fields = (
+            'id',
+            'name',
             'company',
             'active',
         )
@@ -248,7 +264,6 @@ class CommissionSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'num',
-            'commission_type',
             'name',
             'decree',
             'decree_date',

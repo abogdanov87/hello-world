@@ -145,8 +145,7 @@ class Department(models.Model):
     code = models.CharField(
         _('Код подразделения'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Название'),
@@ -199,8 +198,7 @@ class Position(models.Model):
     code = models.CharField(
         _('Код должности'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Название'),
@@ -263,8 +261,7 @@ class Equipment(models.Model):
     code = models.CharField(
         _('Код инструмента'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Название'),
@@ -312,8 +309,7 @@ class Workplace(models.Model):
     code = models.CharField(
         _('Код рабочего места'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     position = models.ForeignKey(
         Position,
@@ -414,8 +410,7 @@ class Employee(models.Model):
     pers_number = models.CharField(
         _('Табельный номер'),
         max_length=255,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     avatar = ThumbnailerImageField(
         _('Аватарка'),
@@ -426,8 +421,7 @@ class Employee(models.Model):
     insurance_number = models.CharField(
         _('Страховой номер (СНИЛС)'),
         max_length=255,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     workplace = models.ManyToManyField(
         Workplace,
@@ -510,8 +504,7 @@ class HarmfulFactor(models.Model):
     code = models.CharField(
         _('Номер'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Наименование'),
@@ -537,8 +530,7 @@ class WorkType(models.Model):
     code = models.CharField(
         _('Номер'),
         max_length=30,
-        blank=False, null=False,
-        default='',
+        blank=True, null=True,
     )
     name = models.CharField(
         _('Наименование'),
@@ -815,22 +807,43 @@ class PpeStandard(models.Model):
         db_table = 'ppe_standard'
 
 
+class EventType(models.Model):
+    """
+        Вид мероприятия
+    """
+    name = models.CharField(
+        _('Наименование'),
+        max_length=255,
+        blank=False, null=False,
+        default='',
+    )
+    company = models.ForeignKey(
+        Company,
+        on_delete=models.PROTECT,
+        blank=True, null=True,
+        verbose_name=_('Компания'),
+    )
+    active = models.BooleanField(
+        _('Статус активности'),
+        blank=False, null=False,
+        default=True,
+    )
+
+    class Meta:
+        db_table = 'event_type'
+        verbose_name = _('Вид мероприятия')
+        verbose_name_plural = _('Виды мероприятий')
+
+    def __str__(self):
+        return self.name
+
+
 class Commission(models.Model):
     """
         Комиссия
     """
-    COMMISSION_TYPES = (
-        (1, 'Медицинское обследование'),
-        (2, 'Инструктаж'),
-    )
     num = models.PositiveIntegerField(
         _('№ п/п'),
-        blank=False, null=False,
-        default=1,
-    )
-    commission_type = models.PositiveIntegerField(
-        _('Вид комиссии'),
-        choices=COMMISSION_TYPES,
         blank=False, null=False,
         default=1,
     )
@@ -932,11 +945,6 @@ class Event(Entity):
     """
         Мероприятие
     """
-    EVENT_TYPES = (
-        (1, 'Медицинское обследование'),
-        (2, 'Инструктаж'),
-        (3, 'Обучение'),
-    )
     FREQUENCY = (
         ('1/t', 'Единоразово'),
         ('1/m', 'Раз в месяц'),
@@ -946,10 +954,11 @@ class Event(Entity):
         ('1/2y', 'Раз в два года'),
         ('1/w', 'Раз в неделю'),
     )
-    event_type = models.PositiveIntegerField(
-        _('Тип мероприятия'),
-        choices=EVENT_TYPES,
+    event_type = models.ForeignKey(
+        EventType,
+        on_delete=models.PROTECT,
         blank=False, null=False,
+        verbose_name=_('Вид мероприятия'),
         default=1,
     )
     name = models.CharField(

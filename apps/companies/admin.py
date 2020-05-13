@@ -15,7 +15,38 @@ from .models import (
     Employee,
     CommissionEmployee,
     Commission,
+    EventType,
+    Event,
 )
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    model = Event
+    fields = [
+        'event_type',
+        'name',
+        'event_date',
+        'frequency',
+        'company',
+        'commission',
+        'previous',
+        'active',
+    ]
+    list_display = ('name', 'company',)
+    list_display_links = ('name',)
+
+
+@admin.register(EventType)
+class EventTypeAdmin(admin.ModelAdmin):
+    model = EventType
+    fields = [
+        'name',
+        'company',
+        'active',
+    ]
+    list_display = ('name', 'company',)
+    list_display_links = ('name',)
 
 
 @admin.register(Company)
@@ -198,7 +229,6 @@ class CommissionAdmin(admin.ModelAdmin):
     model = Commission
     fields = [
         'num',
-        'commission_type',
         'name',
         'decree',
         'decree_date',

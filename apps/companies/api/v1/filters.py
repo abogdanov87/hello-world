@@ -1,4 +1,6 @@
 from django_filters import rest_framework as filters
+from django.db.models import Q, CharField
+from django.db.models.functions import Lower
 from companies.models import (
     Company, 
     Workplace, 
@@ -10,7 +12,11 @@ from companies.models import (
     Event,
     DepartmentType,
     EventEmployee,
+    EventType,
 )
+
+
+CharField.register_lookup(Lower)
 
 
 class CompanyFilter(filters.FilterSet):
@@ -62,12 +68,38 @@ class CommissionFilter(filters.FilterSet):
 
 
 class EventFilter(filters.FilterSet):
+    company = filters.NumberFilter(field_name='company', method='filter_company')
+    name = filters.CharFilter(field_name='name', method='filter_name')
+
     class Meta:
         model = Event
-        fields = ('company',)
+        fields = ('company', 'name',)
+
+    def filter_company(self, queryset, name, value):
+        return queryset.filter(
+            Q(company__isnull=True) | 
+            Q(company=value)
+        )
+
+    def filter_name(self, queryset, name, value):
+        return queryset.filter(name__icontains=value)
 
 
 class EventEmployeeFilter(filters.FilterSet):
     class Meta:
         model = EventEmployee
         fields = ('event_instance',)
+
+
+class EventTypeFilter(filters.FilterSet):
+    company = filters.NumberFilter(field_name='company', method='filter_company')
+
+    class Meta:
+        model = EventType
+        fields = ('active', 'company')
+    
+    def filter_company(self, queryset, name, value):
+        return queryset.filter(
+            Q(company__isnull=True) | 
+            Q(company=value)
+        )
