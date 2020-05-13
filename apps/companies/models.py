@@ -957,8 +957,9 @@ class Event(Entity):
     event_type = models.ForeignKey(
         EventType,
         on_delete=models.PROTECT,
-        blank=True, null=True,
+        blank=False, null=False,
         verbose_name=_('Вид мероприятия'),
+        default=1,
     )
     name = models.CharField(
         _('Наименование'),
