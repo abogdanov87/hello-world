@@ -5,6 +5,7 @@ from django.apps import apps
 from datetime import datetime, timedelta
 from django.conf import settings
 from common.models import Entity
+from django.core.validators import FileExtensionValidator
 
 from django.utils.translation import gettext_lazy as _
 
@@ -31,6 +32,7 @@ class DocumentTemplate(Entity):
         upload_to ='doc_templates/',
         blank=True, null=True,
         verbose_name=_('Файл шаблона'),
+        validators =[FileExtensionValidator(allowed_extensions=['docx'])]
     ) 
     company = models.ForeignKey(
         'companies.Company',
