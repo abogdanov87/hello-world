@@ -217,6 +217,11 @@ class Position(models.Model):
         blank=False, null=False,
         default=False,
     )
+    company_boss = models.BooleanField(
+        _('Руководитель компании'),
+        blank=False, null=False,
+        default=False,
+    )
     active = models.BooleanField(
         _('Статус активности'),
         blank=False, null=False,
