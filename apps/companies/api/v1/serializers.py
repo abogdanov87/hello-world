@@ -125,6 +125,7 @@ class PositionSerializer(serializers.ModelSerializer):
             'name',
             'company',
             'boss',
+            'company_boss',
             'active',
         )
 

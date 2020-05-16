@@ -167,6 +167,7 @@ class PositionAdmin(admin.ModelAdmin):
         'name',
         'company',
         'boss',
+        'company_boss',
         'active',
     ]
     list_display = ('code', 'name', 'company')
