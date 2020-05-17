@@ -73,7 +73,7 @@ class EventFilter(filters.FilterSet):
 
     class Meta:
         model = Event
-        fields = ('company', 'name',)
+        fields = ('company', 'name', 'active', 'event_type')
 
     def filter_company(self, queryset, name, value):
         return queryset.filter(
