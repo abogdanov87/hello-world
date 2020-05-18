@@ -17,7 +17,16 @@ from .models import (
     Commission,
     EventType,
     Event,
+    EventEmployee,
 )
+
+
+@admin.register(EventEmployee)
+class EventEmployeeAdmin(admin.ModelAdmin):
+    model = EventEmployee
+    fields = ('employee', 'event_date', 'certificate', 'active')
+    list_display = ('event_instance', 'employee',)
+    list_display_links = ('event_instance', 'employee',)
 
 
 @admin.register(Event)

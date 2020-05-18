@@ -1,6 +1,7 @@
 from django_filters import rest_framework as filters
 from django.db.models import Q, CharField
 from django.db.models.functions import Lower
+from datetime import datetime
 from companies.models import (
     Company, 
     Workplace, 
@@ -70,10 +71,13 @@ class CommissionFilter(filters.FilterSet):
 class EventFilter(filters.FilterSet):
     company = filters.NumberFilter(field_name='company', method='filter_company')
     name = filters.CharFilter(field_name='name', method='filter_name')
+    employee = filters.NumberFilter(field_name='employee', method='filter_employee')
+    event_date_from = filters.CharFilter(field_name='event_date_from', method='filter_event_date_from')
+    event_date_to = filters.CharFilter(field_name='event_date_to', method='filter_event_date_to')
 
     class Meta:
         model = Event
-        fields = ('company', 'name', 'active', 'event_type')
+        fields = ('company', 'name', 'active', 'event_type', 'employee', 'event_date_from', 'event_date_to')
 
     def filter_company(self, queryset, name, value):
         return queryset.filter(
@@ -83,6 +87,15 @@ class EventFilter(filters.FilterSet):
 
     def filter_name(self, queryset, name, value):
         return queryset.filter(name__icontains=value)
+
+    def filter_employee(self, queryset, name, value):
+        return queryset.filter(employees__employee=value, employees__active=True)
+
+    def filter_event_date_from(self, queryset, name, value):
+        return queryset.filter(event_date__gt=datetime.strptime(value, '%Y-%m-%d'))
+
+    def filter_event_date_to(self, queryset, name, value):
+        return queryset.filter(event_date__lt=datetime.strptime(value, '%Y-%m-%d'))
 
 
 class EventEmployeeFilter(filters.FilterSet):
