@@ -1028,6 +1028,7 @@ class EventEmployee(Entity):
         verbose_name=_('Мероприятие'),
         blank=False, null=False,
         db_column='event_id',
+        related_name='employees',
     )
     employee = models.ForeignKey(
         Employee,
