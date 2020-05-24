@@ -19,6 +19,10 @@ from companies.models import (
     EventEmployee,
     EventDocumentTemplate,
     EventType,
+    HarmfulFactor,
+    WorkType,
+    HarmfulSubstance,
+    AssessmentCard,
 )
 from documents.models import (
     DocumentTemplate,   
@@ -245,16 +249,6 @@ class EmployeeSerializer(serializers.ModelSerializer):
             'company',
         )
 
-    # def update(self, instance, validated_data):
-    #     if validated_data.get('workplace'):
-    #         workplaces = validated_data.pop('workplace')
-    #         instance.workplace.clear()
-    #         for workplace in workplaces:
-    #             instance.workplace.add(workplace)
-
-    #     instance = super().update(instance, validated_data)
-    #     return instance
-
     def validate(self, data):
         return data
 
@@ -357,6 +351,92 @@ class EventEmployeeSerializer(BulkSerializerMixin, serializers.ModelSerializer):
         ).data
         response['employee'] = EmployeeSerializer(
             instance.employee,
+        ).data
+        return response
+
+    def validate(self, data):
+        return data
+
+
+class HarmfulFactorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HarmfulFactor
+        fields = (
+            'code', 
+            'name', 
+            'inspection_frequency',
+        )
+
+
+class WorkTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkType
+        fields = (
+            'code', 
+            'name', 
+            'inspection_frequency',
+        )
+
+
+class HarmfulSubstanceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = HarmfulSubstance
+        fields = (
+            'name', 
+        )
+
+
+class AssessmentCardSerializer(BulkSerializerMixin, serializers.ModelSerializer):
+    harmful_factor = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=HarmfulFactor.objects.all(),
+        required=False,
+        allow_empty=True,
+    )
+    work_type = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=WorkType.objects.all(),
+        required=False,
+        allow_empty=True,
+    )
+    harmful_substance = serializers.PrimaryKeyRelatedField(
+        many=True,
+        queryset=HarmfulSubstance.objects.all(),
+        required=False,
+        allow_empty=True,
+    )
+
+    class Meta:
+        model = AssessmentCard
+        list_serializer_class = BulkListSerializer
+        fields = (
+            'card_number', 
+            'workplace', 
+            'working_condition_class', 
+            'signing_date',
+            'next_assessment_date',
+            'harmful_factor',
+            'work_type',
+            'harmful_substance',
+            'increased_pay',
+            'extra_vacation',
+            'reduced_working_hours',
+            'milk',
+            'therapeutic_nutrition',
+            'early_retirement',
+            'active',
+        )
+
+    def to_representation(self, instance):
+        response = super().to_representation(instance)
+        response['harmful_factor'] = HarmfulFactorSerializer(
+            instance.harmful_factor,
+        ).data
+        response['work_type'] = WorkTypeSerializer(
+            instance.work_type,
+        ).data
+        response['harmful_substance'] = HarmfulSubstanceSerializer(
+            instance.harmful_substance,
         ).data
         return response
 

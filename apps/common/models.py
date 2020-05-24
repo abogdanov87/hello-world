@@ -1,13 +1,31 @@
 from django.db import models
+from django.utils import timezone
 
 from django.utils.translation import gettext_lazy as _
 
 
 class Entity(models.Model):
     """
-        Абстрактная сущность
+        Абстрактная сущность для таблиц у которых должны быть дополнительные параметры
     """
     pass
+
+
+class PeriodHistoricalModel(models.Model):
+    """
+        Модель расширяющая история по данным
+    """
+    start_date = models.DateTimeField(
+        _('Дата создания записи'),
+        default=timezone.datetime.now,
+    ),
+    end_date = models.DateTimeField(
+        _('Дата закрытия записи'),
+        default=timezone.datetime.now,
+    ),
+
+    class Meta:
+        abstract = True
 
 
 class Param(models.Model):

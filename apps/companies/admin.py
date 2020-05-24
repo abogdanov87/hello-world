@@ -18,7 +18,59 @@ from .models import (
     EventType,
     Event,
     EventEmployee,
+    HarmfulFactor,
+    HarmfulSubstance,
+    WorkType,
+    AssessmentCard,
 )
+
+
+@admin.register(HarmfulFactor)
+class HarmfulFactorAdmin(admin.ModelAdmin):
+    model = HarmfulFactor
+    fields = ('code', 'name', 'inspection_frequency',)
+    list_display = ('code', 'name',)
+    list_display_links = ('code', 'name',)
+
+
+@admin.register(HarmfulSubstance)
+class HarmfulSubstanceAdmin(admin.ModelAdmin):
+    model = HarmfulSubstance
+    fields = ('name',)
+    list_display = ('name',)
+    list_display_links = ('name',)
+
+
+@admin.register(WorkType)
+class WorkTypeAdmin(admin.ModelAdmin):
+    model = WorkType
+    fields = ('code', 'name', 'inspection_frequency',)
+    list_display = ('code', 'name',)
+    list_display_links = ('code', 'name',)
+
+
+@admin.register(AssessmentCard)
+class AssessmentCardAdmin(admin.ModelAdmin):
+    model = AssessmentCard
+    fields = (
+        'card_number', 
+        'workplace', 
+        'working_condition_class', 
+        'signing_date',
+        'next_assessment_date',
+        'harmful_factor',
+        'work_type',
+        'harmful_substance',
+        'increased_pay',
+        'extra_vacation',
+        'reduced_working_hours',
+        'milk',
+        'therapeutic_nutrition',
+        'early_retirement',
+        'active',
+    )
+    list_display = ('card_number', 'workplace',)
+    list_display_links = ('card_number', 'workplace',)
 
 
 @admin.register(EventEmployee)

@@ -6,7 +6,7 @@ from django.utils import timezone
 from django.conf import settings
 from easy_thumbnails.fields import ThumbnailerImageField
 from django.apps import apps
-from common.models import Entity
+from common.models import Entity, PeriodHistoricalModel
 from simple_history.models import HistoricalRecords
 
 from django.utils.translation import gettext_lazy as _
@@ -471,37 +471,6 @@ class WorkingConditionClass(models.Model):
         db_table = 'working_condition_class'
 
 
-class Certificate(models.Model):
-    """
-        Сертификат
-    """
-    num = models.PositiveIntegerField(
-        _('Номер п.п'),
-        blank=False, null=False,
-        default=1,
-    )
-    certificate_number = models.CharField(
-        _('Номер сертификата'),
-        max_length=255,
-        blank=False, null=False,
-        default='',
-    )
-    description = models.CharField(
-        _('Примечание'),
-        max_length=2000,
-        blank=True, null=True,
-    )
-    company = models.ForeignKey(
-        Company,
-        on_delete=models.PROTECT,
-        blank=False, null=False,
-        verbose_name=_('Компания'),
-    )
-
-    class Meta:
-        db_table = 'certificate'
-
-
 class HarmfulFactor(models.Model):
     """
         Вредный фактор
@@ -554,24 +523,9 @@ class WorkType(models.Model):
         db_table = 'work_type'
 
 
-class MedicalType(models.Model):
+class HarmfulSubstance(models.Model):
     """
-        Вид мед. осмотра
-    """
-    name = models.CharField(
-        _('Наименование'),
-        max_length=2000,
-        blank=False, null=False,
-        default='',
-    )
-
-    class Meta:
-        db_table = 'medical_type'
-
-
-class PsychiatricType(models.Model):
-    """
-        Вид психиатрического освидетельствования
+        Вредные вещества
     """
     name = models.CharField(
         _('Наименование'),
@@ -581,18 +535,13 @@ class PsychiatricType(models.Model):
     )
 
     class Meta:
-        db_table = 'psychiatric_type'
+        db_table = 'harmful_substance'
 
 
 class AssessmentCard(models.Model):
     """
         Карта СОУТ (Специальная оценка условий труда)
     """
-    ANSWERS = (
-        (0, 'Нет'),
-        (1, 'Да'),
-    )
-
     card_number = models.CharField(
         _('Номер карты'),
         max_length=50,
@@ -627,47 +576,39 @@ class AssessmentCard(models.Model):
         WorkType,
         verbose_name=_('Вид работ'),
     )
-    medical_inspection = models.PositiveIntegerField(
-        _('Проведение медицинских осмотров'),
-        choices=ANSWERS,
-        blank=False, null=False,
-        default=1,
+    harmful_substance = models.ManyToManyField(
+        HarmfulSubstance,
+        verbose_name=_('Вредное вещество'),
     )
-    increased_pay = models.PositiveIntegerField(
+    increased_pay = models.BooleanField(
         _('Повышенная оплата труда'),
-        choices=ANSWERS,
         blank=False, null=False,
-        default=0,
+        default=False,
     )
-    extra_vacation = models.PositiveIntegerField(
+    extra_vacation = models.BooleanField(
         _('Дополнительный отпуск'),
-        choices=ANSWERS,
         blank=False, null=False,
-        default=0,
+        default=False,
     )
-    reduced_working_hours = models.PositiveIntegerField(
+    reduced_working_hours = models.BooleanField(
         _('Сокращенная продолжительность рабочего дня'),
-        choices=ANSWERS,
         blank=False, null=False,
-        default=0,
+        default=False,
     )
-    milk = models.PositiveIntegerField(
+    milk = models.BooleanField(
         _('Молоко'),
-        choices=ANSWERS,
         blank=False, null=False,
-        default=0,
+        default=False,
     )
-    therapeutic_nutrition = models.PositiveIntegerField(
+    therapeutic_nutrition = models.BooleanField(
         _('Лечебно-профилактическое питание'),
-        choices=ANSWERS,
         blank=False, null=False,
-        default=0,
+        default=False,
     )
-    early_retirement = models.PositiveIntegerField(
+    early_retirement = models.BooleanField(
         _('Право на досрочное назначение страховой пенсии'),
-        choices=ANSWERS,
         blank=False, null=False,
-        default=0,
+        default=False,
     )
     active = models.BooleanField(
         _('Статус активности'),
@@ -677,83 +618,11 @@ class AssessmentCard(models.Model):
 
     class Meta:
         db_table = 'assessment_card'
+        verbose_name = 'Карта СОУТ'
+        verbose_name_plural = 'Карты СОУТ'
 
-
-class EducationType(models.Model):
-    """
-        Вид обучения (аттестации)
-    """
-    name = models.CharField(
-        _('Наименование'),
-        max_length=2000,
-        blank=False, null=False,
-        default='',
-    )
-    frequency = models.CharField(
-        _('Периодичность'),
-        max_length=50,
-        blank=False, null=False,
-        default='',
-    )
-
-    class Meta:
-        db_table = 'education_type'
-
-
-class CertificationType(models.Model):
-    """
-        Виды аттестаций
-    """
-    employee = models.ForeignKey(
-        Employee,
-        on_delete=models.PROTECT,
-        blank=False, null=False,
-        verbose_name=_('Сотрудник'),
-    )
-    education_date = models.DateField(
-        _('Дата обучения'),
-        blank=False, null=False,
-        default=datetime.date.today,
-    )
-    id_number = models.CharField(
-        _('Номер удостоверения'),
-        max_length=50,
-        blank=False, null=False,
-        default='',
-    )
-    education_type = models.ForeignKey(
-        EducationType,
-        on_delete=models.PROTECT,
-        blank=False, null=False,
-        verbose_name=_('Вид обучения'),
-    )
-    next_education_date = models.DateField(
-        _('Контрольная дата очередной аттестации'),
-        blank=False, null=False,
-        default=datetime.date.today,
-    )
-    days_to_education = models.PositiveIntegerField(
-        _('Дней до очередной аттестации'),
-        blank=True, null=True,
-    )
-
-    class Meta:
-        db_table = 'certification_type'
-
-
-class MemberStatus(models.Model):
-    """
-        Статус участника
-    """
-    name = models.CharField(
-        _('Наименование'),
-        max_length=2000,
-        blank=False, null=False,
-        default='',
-    )
-
-    class Meta:
-        db_table = 'member_status'
+    def __str__(self):
+        return '{}'.format(self.card_number)
 
 
 class Ppe(models.Model):
