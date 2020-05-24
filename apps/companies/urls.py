@@ -137,7 +137,7 @@ urlpatterns = [
         name='bulk_list_create_update',
     ),
     url(
-        r'^api/v1/assessment_cards/$',
+        r'^api/v1/assessment-cards/$',
         api_v1_views.AssessmentCardListCreateUpdateAPIView.as_view(),
         name='bulk_list_create_update',
     ),

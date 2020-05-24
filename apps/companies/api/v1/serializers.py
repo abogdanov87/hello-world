@@ -23,6 +23,7 @@ from companies.models import (
     WorkType,
     HarmfulSubstance,
     AssessmentCard,
+    WorkingConditionClass,
 )
 from documents.models import (
     DocumentTemplate,   
@@ -362,6 +363,7 @@ class HarmfulFactorSerializer(serializers.ModelSerializer):
     class Meta:
         model = HarmfulFactor
         fields = (
+            'id',
             'code', 
             'name', 
             'inspection_frequency',
@@ -372,6 +374,7 @@ class WorkTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = WorkType
         fields = (
+            'id',
             'code', 
             'name', 
             'inspection_frequency',
@@ -382,6 +385,16 @@ class HarmfulSubstanceSerializer(serializers.ModelSerializer):
     class Meta:
         model = HarmfulSubstance
         fields = (
+            'id',
+            'name', 
+        )
+
+
+class WorkingConditionClassSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkingConditionClass
+        fields = (
+            'id',
             'name', 
         )
 
@@ -410,6 +423,7 @@ class AssessmentCardSerializer(BulkSerializerMixin, serializers.ModelSerializer)
         model = AssessmentCard
         list_serializer_class = BulkListSerializer
         fields = (
+            'id',
             'card_number', 
             'workplace', 
             'working_condition_class', 
@@ -431,12 +445,15 @@ class AssessmentCardSerializer(BulkSerializerMixin, serializers.ModelSerializer)
         response = super().to_representation(instance)
         response['harmful_factor'] = HarmfulFactorSerializer(
             instance.harmful_factor,
+            many=True,
         ).data
         response['work_type'] = WorkTypeSerializer(
             instance.work_type,
+            many=True,
         ).data
         response['harmful_substance'] = HarmfulSubstanceSerializer(
             instance.harmful_substance,
+            many=True,
         ).data
         return response
 

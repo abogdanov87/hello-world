@@ -22,7 +22,16 @@ from .models import (
     HarmfulSubstance,
     WorkType,
     AssessmentCard,
+    WorkingConditionClass,
 )
+
+
+@admin.register(WorkingConditionClass)
+class WorkingConditionClassAdmin(admin.ModelAdmin):
+    model = WorkingConditionClass
+    fields = ('name',)
+    list_display = ('name',)
+    list_display_links = ('name',)
 
 
 @admin.register(HarmfulFactor)

@@ -469,6 +469,8 @@ class WorkingConditionClass(models.Model):
 
     class Meta:
         db_table = 'working_condition_class'
+        verbose_name = _('Класс условий труда')
+        verbose_name_plural = _('Классы условий труда')
 
 
 class HarmfulFactor(models.Model):
@@ -495,6 +497,8 @@ class HarmfulFactor(models.Model):
 
     class Meta:
         db_table = 'harmful_factor'
+        verbose_name = _('Вредный фактор')
+        verbose_name_plural = _('Вредные факторы')
 
 
 class WorkType(models.Model):
@@ -521,6 +525,8 @@ class WorkType(models.Model):
 
     class Meta:
         db_table = 'work_type'
+        verbose_name = _('Вид работ и профессий')
+        verbose_name_plural = _('Виды работ и профессий')
 
 
 class HarmfulSubstance(models.Model):
@@ -536,6 +542,8 @@ class HarmfulSubstance(models.Model):
 
     class Meta:
         db_table = 'harmful_substance'
+        verbose_name = _('Вредное вещество')
+        verbose_name_plural = _('Вредные вещества')
 
 
 class AssessmentCard(models.Model):
