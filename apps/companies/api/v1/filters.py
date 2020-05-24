@@ -14,6 +14,7 @@ from companies.models import (
     DepartmentType,
     EventEmployee,
     EventType,
+    AssessmentCard,
 )
 
 
@@ -115,4 +116,17 @@ class EventTypeFilter(filters.FilterSet):
         return queryset.filter(
             Q(company__isnull=True) | 
             Q(company=value)
+        )
+
+
+class AssessmentCardFilter(filters.FilterSet):
+    company = filters.NumberFilter(field_name='company', method='filter_company')
+
+    class Meta:
+        model = AssessmentCard
+        fields = ('active', 'company',)
+
+    def filter_company(self, queryset, name, value):
+        return queryset.filter(
+            workplace__department__company=value
         )

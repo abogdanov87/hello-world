@@ -7,6 +7,7 @@ from PIL import Image
 import glob, os
 from django.conf import settings
 from django.db.models import Q, CharField
+from django.http import HttpResponse, Http404, JsonResponse
 
 
 from companies.models import (
@@ -24,6 +25,11 @@ from companies.models import (
     EventEmployee,
     EventDocumentTemplate,
     EventType,
+    AssessmentCard,
+    WorkType,
+    HarmfulFactor,
+    HarmfulSubstance,
+    WorkingConditionClass,
 )
 from .serializers import (
     CompanySerializer, 
@@ -40,6 +46,11 @@ from .serializers import (
     EventEmployeeSerializer,
     EventDocumentTemplateSerializer,
     EventTypeSerializer,
+    AssessmentCardSerializer,
+    WorkTypeSerializer,
+    HarmfulFactorSerializer,
+    HarmfulSubstanceSerializer,
+    WorkingConditionClassSerializer,
 )
 from .filters import (
     CompanyFilter, 
@@ -53,6 +64,7 @@ from .filters import (
     DepartmentTypeFilter,
     EventEmployeeFilter,
     EventTypeFilter,
+    AssessmentCardFilter,
 )
 
 
@@ -263,3 +275,29 @@ class EventTypeListCreateAPIView(ListBulkCreateUpdateAPIView):
     queryset = EventType.objects.all()
     serializer_class = EventTypeSerializer
     filterset_class = EventTypeFilter
+
+
+class AssessmentCardListCreateUpdateAPIView(ListBulkCreateUpdateAPIView):
+    queryset = AssessmentCard.objects.all()
+    serializer_class = AssessmentCardSerializer
+    filterset_class = AssessmentCardFilter
+
+
+class DictListAPIView(generics.ListAPIView):
+    queryset = WorkType.objects.all()
+
+    def get(self, request, format=None):
+        working_condition_class_queryset = WorkingConditionClass.objects.all()
+        work_type_queryset = WorkType.objects.all()
+        harmful_factor_queryset = HarmfulFactor.objects.all()
+        harmful_substance_queryset = HarmfulSubstance.objects.all()
+        working_condition_class_serializer = WorkingConditionClassSerializer(working_condition_class_queryset, many=True)
+        work_type_serializer = WorkTypeSerializer(work_type_queryset, many=True)
+        harmful_factor_serializer = WorkTypeSerializer(harmful_factor_queryset, many=True)
+        harmful_substance_serializer = WorkTypeSerializer(harmful_substance_queryset, many=True)
+        return Response({
+            'working_condition_classes': working_condition_class_serializer.data,
+            'work_types': work_type_serializer.data,
+            'harmful_factors': harmful_factor_serializer.data,
+            'harmful_substances': harmful_substance_serializer.data,
+        }, status.HTTP_200_OK)

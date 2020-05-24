@@ -136,4 +136,14 @@ urlpatterns = [
         api_v1_views.EventTypeListCreateAPIView.as_view(),
         name='bulk_list_create_update',
     ),
+    url(
+        r'^api/v1/assessment-cards/$',
+        api_v1_views.AssessmentCardListCreateUpdateAPIView.as_view(),
+        name='bulk_list_create_update',
+    ),
+    url(
+        r'^api/v1/dicts/$',
+        api_v1_views.DictListAPIView.as_view(),
+        name='list',
+    ),
 ]
