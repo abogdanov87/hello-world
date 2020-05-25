@@ -12,6 +12,21 @@ from simple_history.models import HistoricalRecords
 from django.utils.translation import gettext_lazy as _
 
 
+INSPECTION_FREQUENCY = (
+    ('10 1t/1y', '1 раз в год'),
+    ('20 1t/2y', '1 раз в 2 года'),
+)
+
+
+CATEGORY = (
+    ('chemical', 'Химический'), 
+    ('biological', 'Биологический'),
+    ('industrial aerosols', 'Промышленный аэрозоли'),
+    ('physical', 'Физические'),
+    ('ongoing work', 'Проводимые работы. Категории должностей.'),
+)
+
+
 class User(AbstractUser):
     """
         CustomUser
@@ -491,8 +506,9 @@ class HarmfulFactor(models.Model):
     inspection_frequency = models.CharField(
         _('Периодичность осмотра'),
         max_length=50,
+        choices=INSPECTION_FREQUENCY,
         blank=False, null=False,
-        default='',
+        default='10 1t/1y',
     )
 
     class Meta:
@@ -519,8 +535,9 @@ class WorkType(models.Model):
     inspection_frequency = models.CharField(
         _('Периодичность осмотра'),
         max_length=50,
+        choices=INSPECTION_FREQUENCY,
         blank=False, null=False,
-        default='',
+        default='10 1t/1y',
     )
 
     class Meta:
@@ -533,6 +550,13 @@ class HarmfulSubstance(models.Model):
     """
         Вредные вещества
     """
+    category = models.CharField(
+        _('Категория'),
+        max_length=50,
+        choices=CATEGORY,
+        blank=False, null=False,
+        default='chemical',
+    )
     name = models.CharField(
         _('Наименование'),
         max_length=2000,
