@@ -45,7 +45,7 @@ class HarmfulFactorAdmin(admin.ModelAdmin):
 @admin.register(HarmfulSubstance)
 class HarmfulSubstanceAdmin(admin.ModelAdmin):
     model = HarmfulSubstance
-    fields = ('name',)
+    fields = ('category', 'name',)
     list_display = ('name',)
     list_display_links = ('name',)
 

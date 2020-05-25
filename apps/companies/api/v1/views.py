@@ -293,8 +293,8 @@ class DictListAPIView(generics.ListAPIView):
         harmful_substance_queryset = HarmfulSubstance.objects.all()
         working_condition_class_serializer = WorkingConditionClassSerializer(working_condition_class_queryset, many=True)
         work_type_serializer = WorkTypeSerializer(work_type_queryset, many=True)
-        harmful_factor_serializer = WorkTypeSerializer(harmful_factor_queryset, many=True)
-        harmful_substance_serializer = WorkTypeSerializer(harmful_substance_queryset, many=True)
+        harmful_factor_serializer = HarmfulFactorSerializer(harmful_factor_queryset, many=True)
+        harmful_substance_serializer = HarmfulSubstanceSerializer(harmful_substance_queryset, many=True)
         return Response({
             'working_condition_classes': working_condition_class_serializer.data,
             'work_types': work_type_serializer.data,

@@ -382,12 +382,18 @@ class WorkTypeSerializer(serializers.ModelSerializer):
 
 
 class HarmfulSubstanceSerializer(serializers.ModelSerializer):
+    category = serializers.SerializerMethodField()
+
     class Meta:
         model = HarmfulSubstance
         fields = (
             'id',
+            'category',
             'name', 
         )
+
+    def get_category(self, obj):
+        return obj.get_category_display()
 
 
 class WorkingConditionClassSerializer(serializers.ModelSerializer):
