@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'companies',
     'documents',
     'common',
+    'reports',
 ]
 
 MIDDLEWARE = [
